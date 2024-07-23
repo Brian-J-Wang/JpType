@@ -1,0 +1,11 @@
+.stats {
+    margin: 0px 20px 20px 0px;
+}
+
+.stats__name {
+    margin: 0px;
+}
+
+.stats__value {
+    margin: 0px;
+}

@@ -1,0 +1,18 @@
+.practice {
+    margin-top: 50px;
+    padding: 30px;
+}
+
+.practice__stat-panel {
+    padding: 15px;
+    margin: 0px auto;
+    max-width: 915px;
+    box-shadow: 0px 0px 2px;
+    border-radius: 5px;
+    display: flex;
+}
+
+.practice__type-practice {
+    padding: 15px;
+    margin: 30px 0px 0px 0px;
+}
