@@ -30,7 +30,7 @@ function PracticeType(props) {
 
     useEffect(() => {
         const characterList = []
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 12; i++) {
             const index = Math.floor(Math.random() * Hirigana.characters.length);
             const data = {};
             data.en = Hirigana.characters[index].en;
@@ -65,6 +65,12 @@ function PracticeType(props) {
         document.removeEventListener('keyup', parseKeyboardInput);
     }
 
+    const endGame = () => {
+        setIsActive(false);
+
+        console.log("Game ended");
+    }
+
     const toggleActiveCharacter = (state) => {
         const characterList = characters.map((element) => {
             if (element.id == currentChar.current) {
@@ -91,6 +97,10 @@ function PracticeType(props) {
         }
 
         if (evt.key == "Backspace") {
+            if (currentChar.current == 0) { //prevent moving a character behind the first character.
+                return;
+            }
+
             if (keyboardInput.current != "") {
                 keyboardInput.current = keyboardInput.current.substring(0, keyboardInput.current.length - 1);
                 setKBInput(keyboardInput.current);
@@ -168,6 +178,10 @@ function PracticeType(props) {
 
         setCharacters(characterList);
 
+        if (index >= characters.length - 1) {
+            endGame();
+            return;
+        }
     }
 
     return (
