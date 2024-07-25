@@ -1,10 +1,12 @@
 import './PracticeType.css'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useContext } from 'react'
 import Card from '../Card/Card'
 import Hirigana from '../../assets/hirigana.json'
 import keyboardInputContext from '../../Contexts/keyboardInputContext'
+import gameStateContext from '../../Contexts/GameStateContext'
 
 function PracticeType(props) {
+    const gameState = useContext(gameStateContext);
     const [characters, setCharacters] = useState([]);
     const [kbInput, setKBInput] = useState("");
     const keyboardInput = useRef("");
@@ -44,31 +46,28 @@ function PracticeType(props) {
 
     }, []);
 
-    //game state
-    const [isActive, setIsActive] = useState(false);
+    useEffect(() => {
 
-    const startGame = () => {
-        setIsActive(true);
+        switch(gameState.gameState) {
+            case "active":
+                toggleActiveCharacter(true);
+                document.addEventListener("mouseup", onMouseClickedOut);
+                document.addEventListener('keyup', parseKeyboardInput);
+                break;
+            case "paused":
+                toggleActiveCharacter(false);
+                document.removeEventListener("mouseup", onMouseClickedOut);
+                document.removeEventListener('keyup', parseKeyboardInput);
+                break;
+            case "complete":
+                console.log("game is over");
+                break;
+        }
 
-        toggleActiveCharacter(true);
-
-        document.addEventListener("mouseup", onMouseClickedOut);
-        document.addEventListener('keyup', parseKeyboardInput);
-    }
-
-    const pauseGame = () => {
-        setIsActive(false);
-
-        toggleActiveCharacter(false);
-
-        document.removeEventListener("mouseup", onMouseClickedOut);
-        document.removeEventListener('keyup', parseKeyboardInput);
-    }
+    }, [gameState])
 
     const endGame = () => {
-        setIsActive(false);
-
-        console.log("Game ended");
+        gameState.updateGameState("complete");
     }
 
     const toggleActiveCharacter = (state) => {
@@ -85,7 +84,7 @@ function PracticeType(props) {
 
     const onMouseClickedOut = (evt) => {
         if (evt.target != "practice-type") {
-            pauseGame();
+            gameState.updateGameState("paused");   
         }
     }
 
@@ -101,7 +100,7 @@ function PracticeType(props) {
                 return;
             }
 
-            if (keyboardInput.current != "") {
+            if (keyboardInput.current != "") { //clears current inputs
                 keyboardInput.current = keyboardInput.current.substring(0, keyboardInput.current.length - 1);
                 setKBInput(keyboardInput.current);
             } else {
@@ -185,7 +184,7 @@ function PracticeType(props) {
     }
 
     return (
-        <div id="practice-type" className={`practice-type ${!isActive && "practice-type__state_inactive"}`} onClick={startGame}>
+        <div id="practice-type" className={`practice-type ${(gameState.gameState == "inactive") && "practice-type__state_inactive"}`} onClick={() => gameState.updateGameState("active")}>
             <keyboardInputContext.Provider value={kbInput}>
             {
             characters.map((element) => {

@@ -1,10 +1,12 @@
 import './Practice.css'
 import Stats from '../Stats/Stats'
 import PracticeType from '../PracticeType/PracticeType'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import gameStateContext from '../../Contexts/GameStateContext'
 
 
 function Practice(props) {
+    const [gameState, setGameState] = useState("inactive");
     const [results, setResults] = useState([
         {
             statName: "WPM",
@@ -45,18 +47,32 @@ function Practice(props) {
         setResults(updatedResults);
     }
 
+    const updateGameState = (state) => {
+        if (state == "inactive") {
+            setGameState("inactive");
+        } else if (state == "active") {
+            setGameState("active");
+        } else if (state == "paused") {
+            setGameState("paused");
+        } else if (state == "complete") {
+            setGameState("complete");
+        }
+    }
+
     return (
         <div className="practice">
-            <div className="practice__stat-panel">
-                {
-                    results.map((element) => {
-                        return (
-                        <Stats key={element.statName} name={element.statName} value={element.value}/>
-                        )
-                    })
-                }
-            </div>
-            <PracticeType onGameEnd={handleGameEnd}/>
+            <gameStateContext.Provider value={{gameState, updateGameState}}>
+                <div className="practice__stat-panel">
+                    {
+                        results.map((element) => {
+                            return (
+                            <Stats key={element.statName} name={element.statName} value={element.value}/>
+                            )
+                        })
+                    }
+                </div>
+                <PracticeType onGameEnd={handleGameEnd}/>
+            </gameStateContext.Provider>
         </div>
     )
 }
