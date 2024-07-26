@@ -1,8 +1,10 @@
 import './Practice.css'
 import Stats from '../Stats/Stats'
 import PracticeType from '../PracticeType/PracticeType'
-import { useContext, useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import gameStateContext from '../../Contexts/GameStateContext'
+import Timer from '../../JS/timer'
+import Clock from '../Clock/Clock'
 
 
 function Practice(props) {
@@ -25,6 +27,15 @@ function Practice(props) {
         }
 
     ]);
+
+    //timer variables
+    const timer = useRef(new Timer());
+    const timerId = useRef("");
+    const [timeData, setTimeData] = useState({
+        minutes: 0,
+        seconds: 0,
+        ms: 0
+    });
 
     /*
         data passed is expected to be an object whose keys match with the statName and value matches with the values
@@ -59,6 +70,35 @@ function Practice(props) {
         }
     }
 
+    useEffect(() => {
+        switch(gameState) {
+            case "inactive":
+                break;
+            case "active":
+                if (timer.current.getState() == "standby") {
+                    timer.current.start();
+                    
+                    const id = setInterval(updateTimeData, 10);
+                    timerId.current = id;
+                } else if (timer.current.getState() == "paused") {
+                    timer.current.resume();
+                }
+                break;
+            case "paused":
+                timer.current.pause();
+                break;
+            case "complete":
+                timer.current.end();
+                clearInterval(timerId.current);
+                break;
+        }
+    }, [gameState]);
+
+    const updateTimeData = () => {
+        const timeData = timer.current.getElapsedTime();
+        setTimeData(timeData);
+    }
+
     return (
         <div className="practice">
             <gameStateContext.Provider value={{gameState, updateGameState}}>
@@ -72,6 +112,9 @@ function Practice(props) {
                     }
                 </div>
                 <PracticeType onGameEnd={handleGameEnd}/>
+                <div className="practice__footer">
+                    <Clock minutes={timeData.minutes} seconds={timeData.seconds} milli={timeData.ms}/>
+                </div>
             </gameStateContext.Provider>
         </div>
     )

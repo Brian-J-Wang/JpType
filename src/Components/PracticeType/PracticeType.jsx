@@ -47,39 +47,50 @@ function PracticeType(props) {
     }, []);
 
     useEffect(() => {
-
         switch(gameState.gameState) {
+            case "inactive":
+                break;
             case "active":
-                toggleActiveCharacter(true);
-                document.addEventListener("mouseup", onMouseClickedOut);
-                document.addEventListener('keyup', parseKeyboardInput);
+                toggleActiveCharacter();
+                toggleDocumentListeners();
                 break;
             case "paused":
-                toggleActiveCharacter(false);
-                document.removeEventListener("mouseup", onMouseClickedOut);
-                document.removeEventListener('keyup', parseKeyboardInput);
+                toggleActiveCharacter();
+                toggleDocumentListeners();
                 break;
             case "complete":
                 console.log("game is over");
+                toggleDocumentListeners();
                 break;
         }
 
-    }, [gameState])
+        return () => {
+            document.removeEventListener("mouseup", onMouseClickedOut);
+            document.removeEventListener('keydown', parseKeyboardInput);
+        }
 
-    const endGame = () => {
-        gameState.updateGameState("complete");
-    }
+    }, [gameState.gameState]);
 
-    const toggleActiveCharacter = (state) => {
+    const toggleActiveCharacter = () => {
         const characterList = characters.map((element) => {
             if (element.id == currentChar.current) {
-                element.state = (state) ? 'active' : 'inactive';
+                element.state = (gameState.gameState == "active") ? 'active' : 'inactive';
             }
 
             return element;
         });
 
         setCharacters(characterList);
+    }
+
+    const toggleDocumentListeners = () => {
+        if (gameState.gameState == "active") {
+            document.addEventListener("mouseup", onMouseClickedOut);
+            document.addEventListener('keydown', parseKeyboardInput);
+        } else {
+            document.removeEventListener("mouseup", onMouseClickedOut);
+            document.removeEventListener('keydown', parseKeyboardInput);
+        }
     }
 
     const onMouseClickedOut = (evt) => {
@@ -89,6 +100,11 @@ function PracticeType(props) {
     }
 
     const parseKeyboardInput = (evt) => {
+        if (evt.key == "Tab") {
+            evt.preventDefault();
+            return;
+        }
+
         const index = currentChar.current;
 
         if (evt.key == " ") {
@@ -110,6 +126,10 @@ function PracticeType(props) {
             return;
         }
 
+        if (evt.key.length != 1) {
+            return;
+        }
+
         keyboardInput.current = keyboardInput.current.concat(evt.key);
         setKBInput(keyboardInput.current);
         if (keyboardInput.current.length >= characters[index].en.length) {
@@ -127,7 +147,7 @@ function PracticeType(props) {
     }
 
     /*
-    State Update Types:
+    Element state update types.
 
     CorrectIncrement - shifts active character to the right, makes former active
                        element correct.
@@ -178,7 +198,7 @@ function PracticeType(props) {
         setCharacters(characterList);
 
         if (index >= characters.length - 1) {
-            endGame();
+            gameState.updateGameState("complete");
             return;
         }
     }

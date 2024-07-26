@@ -1,0 +1,17 @@
+.clock {
+    margin: 0px 0px 0px auto;
+    font-size: 40px;
+    font-family: 'ubuntu mono', monospace, monospace;
+    font-weight: 700;
+    font-style: normal;
+    text-align: end;
+}
+
+.clock__time {
+    margin: 0px;
+}
+
+.clock__ms {
+    
+    font-size: 20px;
+}
