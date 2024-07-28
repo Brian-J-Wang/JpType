@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
 import keyboardInputContext from '../../Contexts/keyboardInputContext';
-import gameStateContext from '../../Contexts/gameStateContext';
 import './Card.css'
 
 function Card(props) {

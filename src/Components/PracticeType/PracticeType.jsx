@@ -3,13 +3,12 @@ import { useEffect, useRef, useState, useContext } from 'react'
 import Card from '../Card/Card'
 import Hirigana from '../../assets/hirigana.json'
 import keyboardInputContext from '../../Contexts/keyboardInputContext'
-import gameStateContext from '../../Contexts/gameStateContext'
 import gameDataContext from '../../Contexts/gameDataContext'
+import gameState from '../../JS/gameState'
 
 function PracticeType(props) {
-    const gameState = useContext(gameStateContext);
     const gameData = useContext(gameDataContext);
-    const [characters, setCharacters] = useState([]);
+    
     const [kbInput, setKBInput] = useState("");
     const keyboardInput = useRef("");
     const currentChar = useRef(0);
@@ -32,9 +31,9 @@ function PracticeType(props) {
     //  - when the player resumes the practive, the first inactive
     //  element becomes an active element.
 
-    useEffect(() => {
+    const shuffleCharacters = () => {
         const characterList = [];
-        const characterCount = 6;
+        const characterCount = 36;
 
         gameData.setValue('totalChar', characterCount);
 
@@ -44,43 +43,51 @@ function PracticeType(props) {
             data.en = Hirigana.characters[index].en;
             data.jp = Hirigana.characters[index].jp;
             data.id = i;
-            data.state = "inactive";
+            data.state = (data.id == 0)? "active" : "inactive";
             characterList[i] = data;
         }
 
-        setCharacters(characterList);
+        return characterList;
+    }
 
-    }, []);
-
+    const [characters, setCharacters] = useState(shuffleCharacters);
     useEffect(() => {
-        switch(gameState.gameState) {
-            case "inactive":
-                break;
-            case "active":
-                toggleActiveCharacter();
-                toggleDocumentListeners();
-                break;
-            case "paused":
-                toggleActiveCharacter();
-                toggleDocumentListeners();
-                break;
-            case "complete":
-                console.log("game is over");
-                toggleDocumentListeners();
-                break;
-        }
+        gameState.onGameReset(() => {
+            setCharacters(shuffleCharacters);
+        });
+    })
+    //
+    useEffect(() => {
+        document.addEventListener('keydown', onKeyFirstTyped);
+        document.addEventListener('keydown', parseKeyboardInput);
+
+        gameState.onGameActive(() => {
+            toggleActiveCharacter();
+            toggleDocumentListeners();
+        });
+
+        gameState.onGamePaused(() => {
+            toggleActiveCharacter();
+            toggleDocumentListeners();
+        })
+
+        gameState.onGameComplete(() => {
+            console.log("game is over");
+            toggleDocumentListeners();
+        })
+
 
         return () => {
+            document.removeEventListener('keydown', onKeyFirstTyped);
             document.removeEventListener("mouseup", onMouseClickedOut);
             document.removeEventListener('keydown', parseKeyboardInput);
         }
-
-    }, [gameState.gameState]);
+    }, []);
 
     const toggleActiveCharacter = () => {
         const characterList = characters.map((element) => {
             if (element.id == currentChar.current) {
-                element.state = (gameState.gameState == "active") ? 'active' : 'inactive';
+                element.state = (gameState.getState() == "active") ? 'active' : 'inactive';
             }
 
             return element;
@@ -90,18 +97,16 @@ function PracticeType(props) {
     }
 
     const toggleDocumentListeners = () => {
-        if (gameState.gameState == "active") {
+        if (gameState.getState() == "active") {
             document.addEventListener("mouseup", onMouseClickedOut);
-            document.addEventListener('keydown', parseKeyboardInput);
         } else {
             document.removeEventListener("mouseup", onMouseClickedOut);
-            document.removeEventListener('keydown', parseKeyboardInput);
         }
     }
 
     const onMouseClickedOut = (evt) => {
         if (evt.target != "practice-type") {
-            gameState.updateGameState("paused");   
+            gameState.pause();   
         }
     }
 
@@ -211,13 +216,19 @@ function PracticeType(props) {
         setCharacters(characterList);
 
         if (index >= characters.length - 1) {
-            gameState.updateGameState("complete");
+            gameState.complete();
             return;
         }
     }
 
+    const onKeyFirstTyped = () => {
+        gameState.start();
+
+        document.removeEventListener('keydown', onKeyFirstTyped);
+    }
+
     return (
-        <div id="practice-type" className={`practice-type ${(gameState.gameState == "inactive") && "practice-type__state_inactive"}`} onClick={() => gameState.updateGameState("active")}>
+        <div id="practice-type" className={`practice-type`}>
             <keyboardInputContext.Provider value={kbInput}>
             {
             characters.map((element) => {

@@ -1,6 +1,7 @@
 .progress-bar {
     flex-grow: 2;
-    background-color: #2E3532;
+    background-color: #272727;
+    outline: 1px solid black;
     height: 10px;
     border-radius: 5px;
     align-self: center;

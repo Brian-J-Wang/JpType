@@ -1,17 +1,27 @@
 import './StatPanel.css'
 import Stats from '../Stats/Stats'
-import { useEffect, useContext } from 'react'
-import gameStateContext from '../../Contexts/gameStateContext'
+import { useEffect, useState } from 'react'
+import gameState from '../../JS/gameState';
+
+const visibleState = 'stat-panel';
+const hiddenState = 'stat-panel stat-panel__state_hidden';
 
 function StatPanel(props) {
-    const gameState = useContext(gameStateContext);
+    const [panelState, setPanelState] = useState(visibleState);
 
-    const getPanelState = () => {
-        return `stat-panel ${gameState.gameState == "active" && "stat-panel__state_hidden"}`
+    useEffect(() => {
+        gameState.onGameActive(() => {
+            setPanelState(hiddenState);
+        });
+
+        gameState.onGameComplete(() => {
+            setPanelState(visibleState);
+        })
     }
+    ,[]);
 
     return (
-        <div className={getPanelState()}>
+        <div className={panelState}>
             {props.elements.map((element) => {
                 return (<Stats key={element.statName} name={element.statName} value={element.value}/>)
             })}

@@ -25,3 +25,22 @@
     margin-left: auto;
     width: 10px;
 }
+
+.practice__button-bar {
+    display: flex;
+    justify-content: center;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.button-bar__state_hidden {
+    opacity: 0%;
+}
+
+.practice__reset {
+    font-weight: 600;
+    font-size: 20px;
+    padding: 5px 20px;
+    border-radius: 5px;
+    border: 1px solid white;
+    color: #272727;
+}

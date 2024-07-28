@@ -1,14 +1,14 @@
 @font-face {
     font-family: "open sans";
-    src: url("./OpenSans-Regular.ttf") format("tff");
+    src: url("./OpenSans-Regular.ttf");
     font-style: normal;
-    font-weight: 500;
+    font-weight: 400;
     font-display: swap; 
 }
 
 @font-face {
     font-family: "open sans";
-    src: url("./OpenSans-SemiBold.ttf") format("tff");
+    src: url("./OpenSans-SemiBold.ttf");
     font-style: normal;
     font-weight: 600;
     font-display: swap; 
@@ -16,7 +16,7 @@
 
 @font-face {
     font-family: "open sans";
-    src: url("./OpenSans_SemiCondensed-Regular.ttf") format("tff");
+    src: url("./OpenSans_SemiCondensed-Regular.ttf");
     font-style: normal;
     font-weight: 400;
     font-display: swap;
@@ -25,7 +25,7 @@
 
 @font-face {
     font-family: "ubuntu mono";
-    src: url("./UbuntuMono-Bold.ttf") format("tff");
+    src: url("./UbuntuMono-Bold.ttf");
     font-style: normal;
     font-weight: 700;
     font-display: swap;

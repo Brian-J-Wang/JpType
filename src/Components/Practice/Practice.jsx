@@ -2,7 +2,7 @@ import './Practice.css'
 import StatPanel from '../StatPanel/StatPanel'
 import PracticeType from '../PracticeType/PracticeType'
 import { useState, useRef, useEffect } from 'react'
-import gameStateContext from '../../Contexts/gameStateContext'
+import gameState from '../../JS/gameState'
 import gameDataContext from '../../Contexts/gameDataContext'
 import gameDataHandler from '../../JS/gameDataHandler'
 import resultsHandler from '../../JS/resultsHandler'
@@ -19,12 +19,10 @@ function Practice(props) {
         totalTime: 0
     }))
 
-    const [gameState, setGameState] = useState("inactive");
-
     const resultsHandle = useRef(new resultsHandler());
     const [results, setResults] = useState(resultsHandle.current.get());
 
-    //timer variables
+    //timer functions
     const timer = useRef(new Timer());
     const timerId = useRef("");
     const [timeData, setTimeData] = useState({
@@ -32,54 +30,41 @@ function Practice(props) {
         seconds: 0,
         ms: 0
     });
-
-    const handleGameEnd = () => {
-        gameDataHandle.current.setValue("totalTime", timer.current.getElapsedTime());
-
-        console.log(gameDataHandle.current.getValues());
-
-        setResults(resultsHandle.current.update(gameDataHandle.current.getValues()));
-    }
-
-    const updateGameState = (state) => {
-        if (state == "inactive") {
-            setGameState("inactive");
-        } else if (state == "active") {
-            setGameState("active");
-        } else if (state == "paused") {
-            setGameState("paused");
-        } else if (state == "complete") {
-            setGameState("complete");
-        }
-    }
-
     useEffect(() => {
-        switch(gameState) {
-            case "inactive":
-                break;
-            case "active":
-                if (timer.current.getState() == "standby") {
-                    timer.current.start();
-                    
-                    const id = setInterval(updateTimeData, 10);
-                    timerId.current = id;
-                } else if (timer.current.getState() == "paused") {
-                    timer.current.resume();
-                }
-                break;
-            case "paused":
-                timer.current.pause();
-                break;
-            case "complete":
-                timer.current.end();
-                clearInterval(timerId.current);
+        gameState.onGameActive(() => {
+            timer.current.start();
+            timerId.current = setInterval(updateTimeData, 10);
+        });
 
-                gameDataHandle.current.setValue("totalTime", timer.current.getElapsedTime());
+        gameState.onGamePaused(() => {
+            timer.current.pause();
+        });
 
-                handleGameEnd();
-                break;
-        }
-    }, [gameState]);
+        gameState.onGameResumed(() => {
+            timer.current.resume();
+        })
+
+        gameState.onGameComplete(() => {
+            timer.current.end();
+            clearInterval(timerId.current);
+
+            gameDataHandle.current.setValue("totalTime", timer.current.getElapsedTime());
+
+            setResults(resultsHandle.current.update(gameDataHandle.current.getValues()));
+        })
+    }, []);
+
+    //functions for hidding the button states;
+    const [buttonBarState, setButtonBarState] = useState("practice__button-bar");
+    useEffect(() => {
+        gameState.onGameActive(() => {
+            setButtonBarState('practice__button-bar button-bar__state_hidden');
+        })
+
+        gameState.onGameComplete(() => {
+            setButtonBarState('practice__button-bar');
+        })
+    })
 
     const updateTimeData = () => {
         const timeData = timer.current.getElapsedTime();
@@ -91,21 +76,30 @@ function Practice(props) {
     }
 
     const getProgressBarState = () => {
-        return `practice-progress ${((gameState == "complete") && "practice-progress__state_hidden")}`;
+        return `practice-progress ${((gameState.getState() == "complete") && "practice-progress__state_hidden")}`;
+    }
+
+    const resetGame = () => {
+        if (gameState.getState() != "complete") {
+            return;
+        } else {
+            gameState.reset();
+        }
     }
 
 
     return (
         <div className="practice">
             <gameDataContext.Provider value={gameDataHandle.current}>
-            <gameStateContext.Provider value={{gameState, updateGameState}}>
                 <StatPanel elements={results}/>
-                <PracticeType onGameEnd={handleGameEnd}/>
+                <PracticeType/>
                 <div className="practice__footer">
                     <ProgressBar className={getProgressBarState()} progress={getProgress()}></ProgressBar>
                     <Clock minutes={timeData.minutes} seconds={timeData.seconds} milli={timeData.ms}/>
                 </div>
-            </gameStateContext.Provider>
+                <div className={buttonBarState}>
+                    <button className="practice__reset" onClick={resetGame}>Reset</button>
+                </div>
             </gameDataContext.Provider>
         </div>
     )

@@ -1,9 +1,8 @@
 .clock {
     margin: 0px 0px 0px 0px;
     font-size: 40px;
-    font-family: 'ubuntu mono', monospace, monospace;
+    font-family: monospace, monospace;
     font-weight: 700;
-    font-style: normal;
     text-align: end;
 }
 

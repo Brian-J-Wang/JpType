@@ -1,3 +1,4 @@
+import './assets/Fonts/fonts.css'
 import './App.css'
 import './assets/normalize.css'
 import Header from './Components/Header/Header'
