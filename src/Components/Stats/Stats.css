@@ -1,11 +1,16 @@
 .stats {
-    margin: 0px 20px 20px 0px;
+    margin: 10px 40px 10px 0px;
+    
 }
 
 .stats__name {
     margin: 0px;
+    font-size: 30px;
 }
 
 .stats__value {
     margin: 0px;
+    font-size: 20px;
+    font-weight: 700;
+    color: 
 }

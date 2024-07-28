@@ -1,0 +1,16 @@
+.progress-bar {
+    flex-grow: 2;
+    background-color: #2E3532;
+    height: 10px;
+    border-radius: 5px;
+    align-self: center;
+    margin-right: 15px;
+}
+
+.progress-bar__meter {
+    min-width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #74a12e;
+    transition: width 0.15s ease-in;
+}

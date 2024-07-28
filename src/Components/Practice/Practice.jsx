@@ -1,32 +1,28 @@
 import './Practice.css'
-import Stats from '../Stats/Stats'
+import StatPanel from '../StatPanel/StatPanel'
 import PracticeType from '../PracticeType/PracticeType'
 import { useState, useRef, useEffect } from 'react'
-import gameStateContext from '../../Contexts/GameStateContext'
+import gameStateContext from '../../Contexts/gameStateContext'
+import gameDataContext from '../../Contexts/gameDataContext'
+import gameDataHandler from '../../JS/gameDataHandler'
+import resultsHandler from '../../JS/resultsHandler'
 import Timer from '../../JS/timer'
 import Clock from '../Clock/Clock'
+import ProgressBar from '../ProgressBar/ProgressBar'
 
 
 function Practice(props) {
-    const [gameState, setGameState] = useState("inactive");
-    const [results, setResults] = useState([
-        {
-            statName: "WPM",
-            value: "----",
-            desc: "words per minute"
-        },
-        {
-            statName: "Errors",
-            value: "----",
-            desc: "errors committed in this run"
-        },
-        {
-            statName: "Consistency",
-            value: "----",
-            desc: "(number of words - errors) / number of words"
-        }
+    const gameDataHandle = useRef(new gameDataHandler({
+        totalChar: 0,
+        charTyped: 0,
+        totalError: 0,
+        totalTime: 0
+    }))
 
-    ]);
+    const [gameState, setGameState] = useState("inactive");
+
+    const resultsHandle = useRef(new resultsHandler());
+    const [results, setResults] = useState(resultsHandle.current.get());
 
     //timer variables
     const timer = useRef(new Timer());
@@ -37,25 +33,12 @@ function Practice(props) {
         ms: 0
     });
 
-    /*
-        data passed is expected to be an object whose keys match with the statName and value matches with the values
+    const handleGameEnd = () => {
+        gameDataHandle.current.setValue("totalTime", timer.current.getElapsedTime());
 
-        let data = {
-            WPM: "100",
-            Errors: "4",
-        }
-    */
+        console.log(gameDataHandle.current.getValues());
 
-    const handleGameEnd = (data) => {
-        const updatedResults = results.map((element) => {
-            if (data[element.statName]) {
-                element.value = data[element.statName];
-            }
-
-            return element;
-        })
-
-        setResults(updatedResults);
+        setResults(resultsHandle.current.update(gameDataHandle.current.getValues()));
     }
 
     const updateGameState = (state) => {
@@ -90,6 +73,10 @@ function Practice(props) {
             case "complete":
                 timer.current.end();
                 clearInterval(timerId.current);
+
+                gameDataHandle.current.setValue("totalTime", timer.current.getElapsedTime());
+
+                handleGameEnd();
                 break;
         }
     }, [gameState]);
@@ -99,23 +86,27 @@ function Practice(props) {
         setTimeData(timeData);
     }
 
+    const getProgress = () => {
+        return gameDataHandle.current.getValue("charTyped") / gameDataHandle.current.getValue("totalChar");
+    }
+
+    const getProgressBarState = () => {
+        return `practice-progress ${((gameState == "complete") && "practice-progress__state_hidden")}`;
+    }
+
+
     return (
         <div className="practice">
+            <gameDataContext.Provider value={gameDataHandle.current}>
             <gameStateContext.Provider value={{gameState, updateGameState}}>
-                <div className="practice__stat-panel">
-                    {
-                        results.map((element) => {
-                            return (
-                            <Stats key={element.statName} name={element.statName} value={element.value}/>
-                            )
-                        })
-                    }
-                </div>
+                <StatPanel elements={results}/>
                 <PracticeType onGameEnd={handleGameEnd}/>
                 <div className="practice__footer">
+                    <ProgressBar className={getProgressBarState()} progress={getProgress()}></ProgressBar>
                     <Clock minutes={timeData.minutes} seconds={timeData.seconds} milli={timeData.ms}/>
                 </div>
             </gameStateContext.Provider>
+            </gameDataContext.Provider>
         </div>
     )
 }

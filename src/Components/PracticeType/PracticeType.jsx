@@ -3,10 +3,12 @@ import { useEffect, useRef, useState, useContext } from 'react'
 import Card from '../Card/Card'
 import Hirigana from '../../assets/hirigana.json'
 import keyboardInputContext from '../../Contexts/keyboardInputContext'
-import gameStateContext from '../../Contexts/GameStateContext'
+import gameStateContext from '../../Contexts/gameStateContext'
+import gameDataContext from '../../Contexts/gameDataContext'
 
 function PracticeType(props) {
     const gameState = useContext(gameStateContext);
+    const gameData = useContext(gameDataContext);
     const [characters, setCharacters] = useState([]);
     const [kbInput, setKBInput] = useState("");
     const keyboardInput = useRef("");
@@ -31,8 +33,12 @@ function PracticeType(props) {
     //  element becomes an active element.
 
     useEffect(() => {
-        const characterList = []
-        for (let i = 0; i < 12; i++) {
+        const characterList = [];
+        const characterCount = 6;
+
+        gameData.setValue('totalChar', characterCount);
+
+        for (let i = 0; i < characterCount; i++) {  //magic number: is character count
             const index = Math.floor(Math.random() * Hirigana.characters.length);
             const data = {};
             data.en = Hirigana.characters[index].en;
@@ -173,6 +179,8 @@ function PracticeType(props) {
 
                 return element;
             })
+
+            gameData.updateValue("charTyped", n => n + 1);
         } else if (type == "IncorrectIncrement") {
             characterList = characters.map((element) => {
                 if (element.id == index) {
@@ -183,6 +191,9 @@ function PracticeType(props) {
 
                 return element;
             })
+
+            gameData.updateValue("charTyped", n => n + 1);
+            gameData.updateValue("totalError", n => n + 1);
         } else if (type == "Backspace") {
             characterList = characters.map((element) => {
                 if (element.id == index) {
@@ -193,6 +204,8 @@ function PracticeType(props) {
 
                 return element;
             })
+
+            gameData.updateValue("charTyped", n => n - 1);
         }
 
         setCharacters(characterList);

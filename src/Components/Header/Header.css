@@ -1,16 +1,27 @@
 .header {
-    display: flex;
-    justify-content: space-between;
     border-bottom: 1px solid #B8B7B7;
-    padding: 10px 25px 15px 25px;
+    padding: 10px 0px 15px 0px;
     color: black;
     box-sizing: border-box;
     box-shadow: 0px 2px 5px #B8B7B7;
 }
 
+.header__content {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0px auto;
+}
+
 .header__logo {
     font-size: 40px;
+    font-weight: 600;
     margin: 0px;
+}
+
+.header__logo-en {
+    font-weight: 400;
+    font-stretch: semi-condensed;
 }
 
 .header__nav {
