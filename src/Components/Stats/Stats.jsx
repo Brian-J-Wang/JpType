@@ -1,6 +1,6 @@
-import './Stats.css'
+import './StatsCard.css'
 
-function Stats(props) {
+function StatsCard(props) {
 
     return (
         <div className="stats">
@@ -10,4 +10,4 @@ function Stats(props) {
     )
 }
 
-export default Stats
+export default StatsCard

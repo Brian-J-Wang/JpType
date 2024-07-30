@@ -73,4 +73,15 @@ export default class Timer {
             ms: ms
         }
     }
+
+    getElaspedTimeSeconds() {
+        let elapsedTime = 0;
+        if (this._state == "running") {
+            elapsedTime = this._elapsedTime + (Date.now() - this._startTime);
+        } else {
+            elapsedTime = this._elapsedTime;
+        }
+
+        return elapsedTime / 1000;
+    }
 }

@@ -1,18 +1,3 @@
-/*
-there are 4 different game states
-    inactive - game has not started
-    active - game has started and is running
-    paused - game is paused
-    complete = game is completed
-*/
-
-const validStates = [
-    "inactive",
-    "active",
-    "paused",
-    "complete"
-]
-
 const functionCalls = {
     inactive: [],
     active: [],
@@ -32,7 +17,6 @@ class GameState {
     }
 
     update() {
-        console.log(functionCalls);
         functionCalls[this._state].forEach(element => {
             element();
         });

@@ -1,30 +1,44 @@
 import './StatPanel.css'
-import Stats from '../Stats/Stats'
+import StatsCard from '../Stats/Stats'
 import { useEffect, useState } from 'react'
 import gameState from '../../JS/gameState';
+import stathandle from '../../JS/statsHandler';
+
 
 const visibleState = 'stat-panel';
 const hiddenState = 'stat-panel stat-panel__state_hidden';
 
-function StatPanel(props) {
-    const [panelState, setPanelState] = useState(visibleState);
 
+function StatPanel() {
+    const [panelState, setPanelState] = useState(visibleState);
+    const [stats, setStats] = useState([]);
     useEffect(() => {
+
+        setStats(stathandle.get());
+
         gameState.onGameActive(() => {
             setPanelState(hiddenState);
         });
 
         gameState.onGameComplete(() => {
             setPanelState(visibleState);
+            calculateStats();
         })
+    },[]);
+
+    const calculateStats = () => {
+        setStats(stathandle.get());
     }
-    ,[]);
 
     return (
         <div className={panelState}>
-            {props.elements.map((element) => {
-                return (<Stats key={element.statName} name={element.statName} value={element.value}/>)
-            })}
+            {
+                stats.map((element) => {
+                    return (
+                        <StatsCard key={element.statName} name={element.statName} value={element.value}/>
+                    )
+                })
+            }
         </div>
     )
 }

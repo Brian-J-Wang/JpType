@@ -3,24 +3,18 @@ import StatPanel from '../StatPanel/StatPanel'
 import PracticeType from '../PracticeType/PracticeType'
 import { useState, useRef, useEffect } from 'react'
 import gameState from '../../JS/gameState'
-import gameDataContext from '../../Contexts/gameDataContext'
-import gameDataHandler from '../../JS/gameDataHandler'
-import resultsHandler from '../../JS/resultsHandler'
+import gameData from '../../JS/gameData'
 import Timer from '../../JS/timer'
 import Clock from '../Clock/Clock'
 import ProgressBar from '../ProgressBar/ProgressBar'
 
 
 function Practice(props) {
-    const gameDataHandle = useRef(new gameDataHandler({
-        totalChar: 0,
-        charTyped: 0,
-        totalError: 0,
-        totalTime: 0
-    }))
-
-    const resultsHandle = useRef(new resultsHandler());
-    const [results, setResults] = useState(resultsHandle.current.get());
+    //global variable declaration
+    useEffect(() => {
+        gameData.addKeyValue("progress", 0.0);
+        gameData.addKeyValue("totalTime", 0.0);
+    }, [])
 
     //timer functions
     const timer = useRef(new Timer());
@@ -48,9 +42,7 @@ function Practice(props) {
             timer.current.end();
             clearInterval(timerId.current);
 
-            gameDataHandle.current.setValue("totalTime", timer.current.getElapsedTime());
-
-            setResults(resultsHandle.current.update(gameDataHandle.current.getValues()));
+            gameData.setValue("totalTime", timer.current.getElaspedTimeSeconds());
         })
     }, []);
 
@@ -64,19 +56,34 @@ function Practice(props) {
         gameState.onGameComplete(() => {
             setButtonBarState('practice__button-bar');
         })
-    })
+    }, []);
+
+    //progress bar logic 
+    const [progress, setProgress] = useState(0); //range: 0.0 - 1.0
+    useEffect(() => {
+
+        gameData.onValueUpdated("charTyped", () => {
+            const charCount = gameData.getValue("charCount");
+            const charTyped = gameData.getValue("charTyped");
+            gameData.setValue("progress", charTyped / charCount);
+        })
+
+        gameData.onValueUpdated("progress", (value) => {
+            if (value > 1.0) {
+                setProgress(1.0);
+            } else {
+                setProgress(value);
+            }
+        })
+        
+        return () => {
+            gameData.clearOnUpdateFunctions("progress");
+        }
+    }, []);
 
     const updateTimeData = () => {
         const timeData = timer.current.getElapsedTime();
         setTimeData(timeData);
-    }
-
-    const getProgress = () => {
-        return gameDataHandle.current.getValue("charTyped") / gameDataHandle.current.getValue("totalChar");
-    }
-
-    const getProgressBarState = () => {
-        return `practice-progress ${((gameState.getState() == "complete") && "practice-progress__state_hidden")}`;
     }
 
     const resetGame = () => {
@@ -90,17 +97,15 @@ function Practice(props) {
 
     return (
         <div className="practice">
-            <gameDataContext.Provider value={gameDataHandle.current}>
-                <StatPanel elements={results}/>
-                <PracticeType/>
-                <div className="practice__footer">
-                    <ProgressBar className={getProgressBarState()} progress={getProgress()}></ProgressBar>
-                    <Clock minutes={timeData.minutes} seconds={timeData.seconds} milli={timeData.ms}/>
-                </div>
-                <div className={buttonBarState}>
-                    <button className="practice__reset" onClick={resetGame}>Reset</button>
-                </div>
-            </gameDataContext.Provider>
+            <StatPanel/>
+            <PracticeType/>
+            <div className="practice__footer">
+                <ProgressBar className="practice-progress" progress={progress}></ProgressBar>
+                <Clock minutes={timeData.minutes} seconds={timeData.seconds} milli={timeData.ms}/>
+            </div>
+            <div className={buttonBarState}>
+                <button className="practice__reset" onClick={resetGame}>Reset</button>
+            </div>
         </div>
     )
 }

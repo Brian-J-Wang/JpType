@@ -3,7 +3,6 @@ import keyboardInputContext from '../../Contexts/keyboardInputContext';
 import './Card.css'
 
 function Card(props) {
-    const keyboardInput = useContext(keyboardInputContext);
 
     const enState = () => {
         if (props.data.state == "inactive") {
@@ -18,7 +17,7 @@ function Card(props) {
     return (
         <div className={`card card__state_${props.data.state}`}>
             <h2 className={`card__jpn`}>{props.data.jp}</h2>
-            <p className={`card__en ${enState()}`}>{(props.data.state == "active")? keyboardInput : props.data.en}</p>
+            <p className={`card__en ${enState()}`}>{(props.data.state == "active")? props.data.display : props.data.en}</p>
         </div>
     )
 }
