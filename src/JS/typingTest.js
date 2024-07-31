@@ -32,7 +32,7 @@ class TypingTest {
         characterSet = this.getRandomCharacters();
         this.kbInputListener();
 
-        gameState.onGameReset(() => {
+        gameState.onGameState("reset", () => {
             characterSet = this.getRandomCharacters();
             kbInput = "";
             currentChar = 0;
@@ -40,19 +40,19 @@ class TypingTest {
             gameData.setValue("charTyped", 0);
             gameData.setValue("errorCount", 0);
             this.kbInputListener();
-        })
+        });
     }
 
     kbInputListener() {
         document.addEventListener('keydown', this.parseKeyboardInput);
 
-        gameState.onGameComplete(() => {
+        gameState.onGameState("complete", () => {
             document.removeEventListener('keydown', this.parseKeyboardInput);
         });
 
-        gameState.onGameReset(() => {
+        gameState.onGameState("reset", () => {
             document.addEventListener('keydown', this.parseKeyboardInput);
-        })
+        });
     }
 
     getRandomCharacters() {
@@ -75,7 +75,7 @@ class TypingTest {
     }
 
     parseKeyboardInput = ({key}) => {
-        if (gameState.getState() == "inactive") {
+        if (gameState.isState("inactive")) {
             console.log('game started');
             gameState.start();
         }

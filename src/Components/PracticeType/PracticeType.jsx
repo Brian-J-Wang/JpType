@@ -33,27 +33,26 @@ function PracticeType(props) {
             setCharacters(newState);
         })
 
-        gameState.onGameReset(() => {
+        gameState.onGameState("reset", () => {
             setCharacters(typingTest.getCurrentState());
-        });
+        }, 2);
     }, [])
     
     //
     useEffect(() => {
 
-        gameState.onGameActive(() => {
-            toggleDocumentListeners();
-        });
-
-        gameState.onGamePaused(() => {
+        gameState.onGameState("active", () => {
             toggleDocumentListeners();
         })
 
-        gameState.onGameComplete(() => {
+        gameState.onGameState("paused", () => {
+            toggleDocumentListeners();
+        })
+
+        gameState.onGameState("complete", () => {
             console.log("game is over");
             toggleDocumentListeners();
         })
-
 
         return () => {
             document.removeEventListener("mouseup", onMouseClickedOut);
@@ -61,7 +60,7 @@ function PracticeType(props) {
     }, []);
 
     const toggleDocumentListeners = () => {
-        if (gameState.getState() == "active") {
+        if (gameState.isState("active")) {
             document.addEventListener("mouseup", onMouseClickedOut);
         } else {
             document.removeEventListener("mouseup", onMouseClickedOut);

@@ -25,35 +25,45 @@ function Practice(props) {
         ms: 0
     });
     useEffect(() => {
-        gameState.onGameActive(() => {
+        gameState.onGameState("active", () => {
             timer.current.start();
             timerId.current = setInterval(updateTimeData, 10);
         });
 
-        gameState.onGamePaused(() => {
+        gameState.onGameState("paused", () => {
             timer.current.pause();
         });
 
-        gameState.onGameResumed(() => {
+        gameState.onGameState("resumed", () => {
             timer.current.resume();
         })
 
-        gameState.onGameComplete(() => {
+        gameState.onGameState("complete", () => {
             timer.current.end();
             clearInterval(timerId.current);
 
             gameData.setValue("totalTime", timer.current.getElaspedTimeSeconds());
+        })
+
+        gameState.onGameState("reset", () => {
+            timer.current.reset();
+            setTimeData({
+                minutes: 0,
+                seconds: 0,
+                ms: 0
+            });
         })
     }, []);
 
     //functions for hidding the button states;
     const [buttonBarState, setButtonBarState] = useState("practice__button-bar");
     useEffect(() => {
-        gameState.onGameActive(() => {
+
+        gameState.onGameState("active", () => {
             setButtonBarState('practice__button-bar button-bar__state_hidden');
         })
 
-        gameState.onGameComplete(() => {
+        gameState.onGameState("complete", () => {
             setButtonBarState('practice__button-bar');
         })
     }, []);
@@ -87,13 +97,12 @@ function Practice(props) {
     }
 
     const resetGame = () => {
-        if (gameState.getState() != "complete") {
-            return;
-        } else {
+        if (gameState.isState("complete")) {
             gameState.reset();
+        } else {
+            return;
         }
     }
-
 
     return (
         <div className="practice">

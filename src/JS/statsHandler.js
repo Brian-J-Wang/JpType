@@ -36,13 +36,13 @@ const statList = [
 
 class statHandler {
     constructor() {
-        gameState.onGameComplete(() => {
+        gameState.onGameState("complete", () => {
             statList.forEach((stat) => {
                 stat.updateValue();
             })
-        })
+        }, 2);
 
-        gameState.onGameReset(() => {
+        gameState.onGameState("reset", () => {
             statList.forEach((stat) => {
                 stat.value = "----"
             })

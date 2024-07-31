@@ -1,70 +1,76 @@
-const functionCalls = {
-    inactive: [],
-    active: [],
-    paused: [],
-    resumed: [],
-    complete: [],
-    reset: []
-}
-
 class GameState {
+    #stateFunctions = {
+        inactive: [],
+        active: [],
+        paused: [],
+        resumed: [],
+        complete: [],
+        reset: []
+    }    
+
     constructor() {
         this._state = "inactive"
+        console
     }
 
     getState() {
         return this._state;
     }
 
+    isState(state) {
+        if (this.#stateFunctions[state] == null) {
+            console.error("state: ${state} does not exist");
+            return false;
+        }
+
+        return (state == this._state) ? true : false;
+    }
+
     update() {
-        functionCalls[this._state].forEach(element => {
-            element();
+        this.#stateFunctions[this._state].forEach(element => {
+            element.funct();
         });
     }
 
-    onGameInactive(funct) {
-        if (this.notDuplicate(funct, "inactive")) {
-            functionCalls.inactive.push(funct);
+    //stage refers to the order in which functions should execute, higher numbers are executed last.
+    onGameState(gameState, funct, stage = 1) {
+        if (this.#stateFunctions[gameState] == null) {
+            console.log(`state: ${gameState} does not exist`);
+            return;
+        }
+
+        if (this.isDuplicate(gameState, funct, stage)) {
+            return;
+        }
+
+        const insertIndex = this.#stateFunctions[gameState].findIndex(element => {
+            return (element.stage >= stage ) ? true : false;
+        })
+
+        const element = {
+            funct: funct,
+            stage: stage
+        }
+
+        if(insertIndex == -1) {
+            this.#stateFunctions[gameState].push(element);
+        } else {
+            this.#stateFunctions[gameState].splice(insertIndex, 0, element);
         }
     }
 
-    onGameActive(funct) {
-        if (this.notDuplicate(funct, "active")) {
-            functionCalls.active.push(funct);
-
+    isDuplicate(gameState, funct, stage) {
+        if (this.#stateFunctions[gameState].length == 0) {
+            return false;
         }
-    }
 
-    onGamePaused(funct) {
-        if (this.notDuplicate(funct, "paused")) {
-            functionCalls.paused.push(funct);
-        }
-    }
+        //incorrect logic
 
-    onGameResumed(funct) {
-        if (this.notDuplicate(funct, "resumed")) {
-            functionCalls.resumed.push(funct);
-        }
+        return !this.#stateFunctions[gameState].every(element => {
+            return (element.funct.toString() != funct.toString() || element.stage != stage) ? true : false
+        })
     }
-
-    onGameComplete(funct) {
-        if (this.notDuplicate(funct, "complete")) {
-            functionCalls.complete.push(funct);
-        }
-    }
-
-    onGameReset(funct) {
-        if (this.notDuplicate(funct, "reset")) {
-            functionCalls.reset.push(funct);
-        }
-    }
-
-    notDuplicate(funct, location) {
-        const functAsString = funct.toString();
-        return functionCalls[location].every((element => {
-            return (element.toString() == functAsString) ? false : true;
-        }))
-    }
+    
 
     start() {
         if(this._state != "inactive") {
@@ -105,7 +111,6 @@ class GameState {
             return;
         } else {
             this._state = "complete";
-
             this.update();
         }
     }
@@ -121,5 +126,6 @@ class GameState {
 }
 
 const gameState = new GameState();
+
 
 export default gameState

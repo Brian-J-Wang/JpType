@@ -16,14 +16,14 @@ function StatPanel() {
 
         setStats(stathandle.get());
 
-        gameState.onGameActive(() => {
+        gameState.onGameState("active", () => {
             setPanelState(hiddenState);
         });
 
-        gameState.onGameComplete(() => {
+        gameState.onGameState("complete",() => {
             setPanelState(visibleState);
             calculateStats();
-        })
+        }, 3);
     },[]);
 
     const calculateStats = () => {
