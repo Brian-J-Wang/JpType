@@ -1,6 +1,8 @@
 .practice {
-    margin-top: 50px;
-    padding: 30px;
+    padding: 200px 200px;
+    margin-top: auto;
+    margin-bottom: auto;
+    background-color: whitesmoke;
 }
 
 .practice__type-practice {
@@ -11,7 +13,6 @@
 .practice__footer {
     display: flex;
     justify-content: end;
-    width: 915px;
     padding: 15px;
     margin: 0px auto;
 }

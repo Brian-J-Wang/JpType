@@ -76,16 +76,16 @@ class TypingTest {
 
     parseKeyboardInput = ({key}) => {
         if (gameState.isState("inactive")) {
-            console.log('game started');
             gameState.start();
         }
 
+        //TODO: redo the logic for backspacing, it is causing an issue where backspacing on a 3 letter character will result in no update.
         if (key == "Backspace") {
             if (kbInput == "") {
                 this.updateCharacterState("inactive", n => n - 1);
             } else {
                 let char = characterSet[currentChar];
-                kbInput = kbInput.split(0, kbInput.length - 1);
+                kbInput = kbInput.slice(0, kbInput.length - 1);
                 char.display = kbInput;
             }
             this.callOnUpdate();
