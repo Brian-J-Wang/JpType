@@ -1,4 +1,4 @@
-import gameData from './gameData';
+import gameData from './gameData'
 import gameState from './gameState'
 import settings from './settings'
 

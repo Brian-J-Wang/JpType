@@ -1,13 +1,20 @@
 .practice {
-    padding: 200px 200px;
-    margin-top: auto;
-    margin-bottom: auto;
+    max-width: 1300px;
+    height: 500px;
+    padding: 0px 200px;
     background-color: whitesmoke;
+    margin: 200px auto;
 }
 
-.practice__type-practice {
-    padding: 15px;
-    margin: 30px 0px 0px 0px;
+.practice__menu-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+    transition: opacity 0.3s ease-in;
+}
+
+.practice__menu-bar__state_hidden {
+    opacity: 0%;
 }
 
 .practice__footer {
@@ -43,5 +50,11 @@
     padding: 5px 20px;
     border-radius: 5px;
     border: 1px solid white;
-    color: #272727;
+    background-color: #272727;
+    color: whitesmoke;
+    transition: color 0.2s ease-in-out;
+}
+
+.practice__reset:hover {
+    color: #74a12e;
 }

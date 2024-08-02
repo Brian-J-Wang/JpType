@@ -1,7 +1,9 @@
 import './Practice.css'
+import '../../assets/JPType.css'
 import StatPanel from '../StatPanel/StatPanel'
 import PracticeType from '../PracticeType/PracticeType'
 import { useState, useRef, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import gameState from '../../JS/gameState'
 import gameData from '../../JS/gameData'
 import Timer from '../../JS/timer'
@@ -104,8 +106,32 @@ function Practice(props) {
         }
     }
 
+    const [menuBarClasses, setMenuBarClasses] = useState("practice__menu-bar");
+    useEffect(() => {
+        gameState.onGameState("active", () => {
+            setMenuBarClasses("practice__menu-bar practice__menu-bar__state_hidden");
+        });
+
+        gameState.onGameState("complete", () => {
+            setMenuBarClasses("practice__menu-bar");
+        })
+    }, [])
+
+    const navigate = useNavigate();
+    const onSettingClicked = () => {
+        navigate("/settings");
+    }
+
+    const onProfileClicked = () => {
+        navigate("/profile")
+    }
+
     return (
         <div className="practice">
+            <div className={menuBarClasses}>
+                <button onClick={onSettingClicked} className="jpType__button">Settings</button>
+                <button onClick={onProfileClicked} className="jpType__button">Profile</button>
+            </div>
             <StatPanel/>
             <PracticeType/>
             <div className="practice__footer">
@@ -113,7 +139,7 @@ function Practice(props) {
                 <Clock minutes={timeData.minutes} seconds={timeData.seconds} milli={timeData.ms}/>
             </div>
             <div className={buttonBarState}>
-                <button className="practice__reset" onClick={resetGame}>Reset</button>
+                <button className="jpType__button" onClick={resetGame}>Reset</button>
             </div>
         </div>
     )

@@ -19,7 +19,6 @@ function App() {
 		)
 	}
 
-
 	const router = createBrowserRouter([
 		{
 			element: appLayout(),
