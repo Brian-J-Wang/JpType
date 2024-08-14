@@ -27,7 +27,7 @@ function Practice(props) {
         ms: 0
     });
     useEffect(() => {
-        const id = [
+        const ids = [
             gameState.onGameState("active", () => {
                 timer.current.start();
                 timerId.current = setInterval(updateTimeData, 10);
@@ -55,7 +55,7 @@ function Practice(props) {
         ];
 
         return () => {
-            gameState.removeCallbacks(id);
+            gameState.removeCallbacks(ids);
         }
     }, []);
 
@@ -63,13 +63,19 @@ function Practice(props) {
     const [buttonBarState, setButtonBarState] = useState("practice__button-bar");
     useEffect(() => {
 
-        gameState.onGameState("active", () => {
-            setButtonBarState('practice__button-bar button-bar__state_hidden');
-        })
+        const ids = [
+            gameState.onGameState("active", () => {
+                setButtonBarState('practice__button-bar button-bar__state_hidden');
+            }),
+            gameState.onGameState("complete", () => {
+                setButtonBarState('practice__button-bar');
+            })
+        ]
 
-        gameState.onGameState("complete", () => {
-            setButtonBarState('practice__button-bar');
-        })
+        return () => {
+            gameState.removeCallbacks(ids);
+        }
+        
     }, []);
 
     //progress bar logic 

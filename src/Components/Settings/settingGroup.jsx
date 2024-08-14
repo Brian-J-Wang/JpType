@@ -6,8 +6,6 @@ import settings from "./settingData";
 function SettingGroup(props) {
     const { settingTab: current } = useContext(settingContext);
 
-    console.log(current);
-
     return (
         <>
             {
