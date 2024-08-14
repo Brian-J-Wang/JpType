@@ -1,19 +1,18 @@
-import { useNavigate} from 'react-router-dom'
-import { useEffect, useState } from 'react';
-import { useSettings } from './gameSettings';
 import './Settings.css'
+import { useNavigate } from 'react-router-dom'
+import { useState, useContext, useEffect } from 'react';
+import SettingTabs from './settingTabs.jsx';
+import settingContext from './settingsContext.js';
+import SettingGroup from './settingGroup.jsx';
+import gameState from '../../JS/gameState.js';
 
 
 function Settings(props) {
-
-    const [settingGroups, setSettingGroups] = useState([]);
-
-    useEffect(() => {
-        setSettingGroups(useSettings());
-    }, [])
+    const [settingTab, setSettingTab] = useState("General");
 
     const navigate = useNavigate();
     const handleBackClick = () => {
+        gameState.return();
         navigate("/");
     }
 
@@ -30,12 +29,14 @@ function Settings(props) {
                 <h1 className='settings__title'>Settings</h1>
             </div>
             <div className="settings__container">
-                <fieldset className="settings__panel">
-                    {settingGroups}
-                </fieldset>
-                <div className="settings__optionals">
-
-                </div>
+                <settingContext.Provider value={{settingTab, setSettingTab}}>
+                    <fieldset className="settings__panel">
+                        <SettingTabs />
+                    </fieldset>
+                    <div className="settings__optionals">
+                        <SettingGroup />
+                    </div>
+                </settingContext.Provider>
             </div>
         </div>
     

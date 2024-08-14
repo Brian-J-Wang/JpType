@@ -27,34 +27,36 @@ function Practice(props) {
         ms: 0
     });
     useEffect(() => {
-        gameState.onGameState("active", () => {
-            timer.current.start();
-            timerId.current = setInterval(updateTimeData, 10);
-        });
+        const id = [
+            gameState.onGameState("active", () => {
+                timer.current.start();
+                timerId.current = setInterval(updateTimeData, 10);
+            }),
+            gameState.onGameState("paused", () => {
+                timer.current.pause();
+            }),
+            gameState.onGameState("resumed", () => {
+                timer.current.resume();
+            }),
+            gameState.onGameState("complete", () => {
+                timer.current.end();
+                clearInterval(timerId.current);
+    
+                gameData.setValue("totalTime", timer.current.getElaspedTimeSeconds());
+            }),
+            gameState.onGameState("reset", () => {
+                timer.current.reset();
+                setTimeData({
+                    minutes: 0,
+                    seconds: 0,
+                    ms: 0
+                });
+            })
+        ];
 
-        gameState.onGameState("paused", () => {
-            timer.current.pause();
-        });
-
-        gameState.onGameState("resumed", () => {
-            timer.current.resume();
-        })
-
-        gameState.onGameState("complete", () => {
-            timer.current.end();
-            clearInterval(timerId.current);
-
-            gameData.setValue("totalTime", timer.current.getElaspedTimeSeconds());
-        })
-
-        gameState.onGameState("reset", () => {
-            timer.current.reset();
-            setTimeData({
-                minutes: 0,
-                seconds: 0,
-                ms: 0
-            });
-        })
+        return () => {
+            gameState.removeCallbacks(id);
+        }
     }, []);
 
     //functions for hidding the button states;
@@ -119,6 +121,7 @@ function Practice(props) {
 
     const navigate = useNavigate();
     const onSettingClicked = () => {
+        gameState.exit();
         navigate("/settings");
     }
 

@@ -8,25 +8,6 @@ import gameData from '../../JS/gameData'
 import typingTest from '../../JS/typingTest'
 
 function PracticeType(props) {
-
-    //data.state
-    //  inactive - user has not reached to this character
-    //  active - user is currently typing out this character
-    //  correct - user has typed the character correctly
-    //  incorrect - user has typed the character incorrectly
-    //
-    //  expected order in charcterList should be:
-    //  cor, cor, incor, cor, active, inact, inact
-    //  - only one active character exists at any given time
-    //  - characters to the left of the active character are
-    //  either correct or incorrect
-    //  - characters to the right of the active character are
-    //  inactive
-    //  - when the player stops the practive, the active element
-    //  returns to an inactive element
-    //  - when the player resumes the practive, the first inactive
-    //  element becomes an active element.
-
     const [characters, setCharacters] = useState(typingTest.getCurrentState());
     useEffect(() => {
         typingTest.onStateUpdate((newState) => {
@@ -39,39 +20,39 @@ function PracticeType(props) {
     }, [])
     
     //
-    useEffect(() => {
+    // useEffect(() => {
 
-        gameState.onGameState("active", () => {
-            toggleDocumentListeners();
-        })
+    //     gameState.onGameState("active", () => {
+    //         toggleDocumentListeners();
+    //     })
 
-        gameState.onGameState("paused", () => {
-            toggleDocumentListeners();
-        })
+    //     gameState.onGameState("paused", () => {
+    //         toggleDocumentListeners();
+    //     })
 
-        gameState.onGameState("complete", () => {
-            console.log("game is over");
-            toggleDocumentListeners();
-        })
+    //     gameState.onGameState("complete", () => {
+    //         console.log("game is over");
+    //         toggleDocumentListeners();
+    //     })
 
-        return () => {
-            document.removeEventListener("mouseup", onMouseClickedOut);
-        }
-    }, []);
+    //     return () => {
+    //         document.removeEventListener("mouseup", onMouseClickedOut);
+    //     }
+    // }, []);
 
-    const toggleDocumentListeners = () => {
-        if (gameState.isState("active")) {
-            document.addEventListener("mouseup", onMouseClickedOut);
-        } else {
-            document.removeEventListener("mouseup", onMouseClickedOut);
-        }
-    }
+    // const toggleDocumentListeners = () => {
+    //     if (gameState.isState("active")) {
+    //         document.addEventListener("mouseup", onMouseClickedOut);
+    //     } else {
+    //         document.removeEventListener("mouseup", onMouseClickedOut);
+    //     }
+    // }
 
-    const onMouseClickedOut = (evt) => {
-        if (evt.target != "practice-type") {
-            gameState.pause();   
-        }
-    }
+    // const onMouseClickedOut = (evt) => {
+    //     if (evt.target != "practice-type") {
+    //         gameState.pause();   
+    //     }
+    // }
 
     return (
         <div id="practice-type" className={`practice-type`}>

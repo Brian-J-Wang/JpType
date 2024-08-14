@@ -16,7 +16,6 @@ characterSet stores characters in this format
 
 */
 
-
 const onUpdate = [];
 let characterSet = [];
 let currentChar = 0;
@@ -30,20 +29,7 @@ class TypingTest {
         gameData.addKeyValue("errorCount", 0);
 
         characterSet = this.getRandomCharacters();
-        this.kbInputListener();
 
-        gameState.onGameState("reset", () => {
-            characterSet = this.getRandomCharacters();
-            kbInput = "";
-            currentChar = 0;
-            gameData.setValue("charCount", settings.characterCount);
-            gameData.setValue("charTyped", 0);
-            gameData.setValue("errorCount", 0);
-            this.kbInputListener();
-        });
-    }
-
-    kbInputListener() {
         document.addEventListener('keydown', this.parseKeyboardInput);
 
         gameState.onGameState("complete", () => {
@@ -51,10 +37,33 @@ class TypingTest {
         });
 
         gameState.onGameState("reset", () => {
+            this.clearInputs();
+
+            characterSet = this.getRandomCharacters();
             document.addEventListener('keydown', this.parseKeyboardInput);
         });
+
+        gameState.onGameState("exit", () => {
+            document.removeEventListener('keydown', this.parseKeyboardInput);
+        })
+
+        gameState.onGameState("return", () => {
+            this.clearInputs();
+
+            characterSet = this.getRandomCharacters();
+            document.addEventListener('keydown', this.parseKeyboardInput);
+        })
     }
 
+    clearInputs() {
+        kbInput = "";
+        currentChar = 0;
+        gameData.setValue("charCount", settings.characterCount);
+        gameData.setValue("charTyped", 0);
+        gameData.setValue("errorCount", 0);
+        characterSet = [];
+    }
+    
     getRandomCharacters() {
         const characterList = [];
     

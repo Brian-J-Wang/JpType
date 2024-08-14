@@ -1,0 +1,77 @@
+.scaffold {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin: 0px 0px 30px 20px;
+}
+
+.scaffold__vertical {
+    display: block;
+}
+
+.scaffold__option-details {
+    width: 600px;
+}
+
+.scaffold__options-details__direction_vertical {
+    width: 100%;
+}
+
+.scaffold__option-name {
+    font-size: 24px;
+    color: #272727;
+    margin: 0px;
+}
+
+.scaffold__option-desc {
+    font-size: 14px;
+    color: rgba(27, 27, 27, 0.8);
+    margin: 5px 0px 0px;
+}
+
+.numberInput {
+    box-sizing: border-box;
+    height: 23.59px;
+    margin: 2px 0px;
+    text-align: end;
+    border: none;
+    border-radius: 4px;
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+/*removes arrows from number inputs*/
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* classes for toggle input */
+.toggle-input {
+    height: 26px;
+    width: 52px;
+    border-radius: 13px;
+    box-shadow: inset 0px 0px 10px #A02B2B;
+    background-color: #D73A3A;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.toggle-input__active {
+    box-shadow: inset 0px 0px 10px #42660b;
+    background-color: #74A12E;
+}
+
+.toggle-input__nub {
+    margin: 2px 2px 2px 2px;
+    height: 22px;
+    width: 22px;
+    border-radius: 12px;
+    background-color: white;
+    transition: all 0.15s ease-in-out;
+}
+
+.toggle-input__nub_active {
+    margin: 2px 2px 2px 28px;
+}
+
