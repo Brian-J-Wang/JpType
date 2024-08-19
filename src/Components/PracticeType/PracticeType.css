@@ -1,0 +1,10 @@
+.practice-type {
+    margin: 30px auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.practice-type__state_inactive {
+    opacity: 50%;
+}
+
