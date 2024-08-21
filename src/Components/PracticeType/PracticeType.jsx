@@ -14,9 +14,13 @@ function PracticeType(props) {
             setCharacters(newState);
         })
 
-        gameState.onGameState("reset", () => {
+        const id = gameState.onGameState("reset", () => {
             setCharacters(typingTest.getCurrentState());
         }, 2);
+
+        return () => {
+            gameState.removeCallback(id);
+        }
     }, [])
     
     //

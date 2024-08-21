@@ -1,6 +1,6 @@
-import { useContext} from "react"
+import { useContext } from "react"
 import settingContext from "./settingsContext"
-import settings from "./settingData";
+import { settings } from "./settingData";
 
 function SettingTabs(props) {
 
@@ -12,7 +12,7 @@ function SettingTabs(props) {
             Object.keys(settings).map(tab => {
                 return <label key={tab} htmlFor={tab} className='settings__group-name'>
                     <input type="radio" id={tab} name="setting-group" value={tab} 
-                    className='settings__radio-input' defaultChecked={tab} onClick={() => {setSettingTab(tab)}}/>
+                    className='settings__radio-input' defaultChecked={tab === settingTab} onClick={() => {setSettingTab(tab)}}/>
                     {tab}
                 </label>
             })

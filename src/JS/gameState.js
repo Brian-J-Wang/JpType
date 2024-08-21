@@ -21,8 +21,7 @@ class GameState {
     #exitFunctions = [];
 
     constructor() {
-        this._state = "inactive"
-        console
+        this._state = "inactive";
     }
 
     getState() {

@@ -6,7 +6,8 @@
 
 .card {
     box-sizing: content-box;
-    margin: 0px 0px 20px 0px;
+    height: 75px;
+    margin-bottom: 15px;
     padding: 0px 10px;
 }
 

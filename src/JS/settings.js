@@ -1,5 +1,5 @@
 const settings = {
-    characterCount: 10
+    characterCount: localStorage.getItem("Character Count"),
 }
 
 export default settings

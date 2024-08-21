@@ -107,6 +107,7 @@ function Practice(props) {
     }
 
     const resetGame = () => {
+        console.log(gameState.getState());
         if (gameState.isState("complete")) {
             gameState.reset();
         } else {
@@ -116,13 +117,18 @@ function Practice(props) {
 
     const [menuBarClasses, setMenuBarClasses] = useState("practice__menu-bar");
     useEffect(() => {
-        gameState.onGameState("active", () => {
-            setMenuBarClasses("practice__menu-bar practice__menu-bar__state_hidden");
-        });
-
-        gameState.onGameState("complete", () => {
-            setMenuBarClasses("practice__menu-bar");
-        })
+        const ids = [
+            gameState.onGameState("active", () => {
+                setMenuBarClasses("practice__menu-bar practice__menu-bar__state_hidden");
+            }),
+            gameState.onGameState("complete", () => {
+                setMenuBarClasses("practice__menu-bar");
+            })
+        ]
+        
+        return () => {
+            gameState.removeCallbacks(ids);
+        }   
     }, [])
 
     const navigate = useNavigate();
@@ -147,8 +153,8 @@ function Practice(props) {
                 <ProgressBar className="practice-progress" progress={progress}></ProgressBar>
                 <Clock minutes={timeData.minutes} seconds={timeData.seconds} milli={timeData.ms}/>
             </div>
-            <div className={buttonBarState}>
-                <button className="jpType__button" onClick={resetGame}>Reset</button>
+            <div className={`practice__button-bar ${!gameState.isState("complete") && "button-bar__state_hidden"}`}>
+                <button className={`jpType__button`} onClick={resetGame}>Reset</button>
             </div>
         </div>
     )

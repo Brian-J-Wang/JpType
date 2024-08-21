@@ -3,6 +3,7 @@ import gameState from './gameState'
 import settings from './settings'
 
 import Hirigana from '../assets/hirigana.json'
+import { storage } from '../Components/Settings/settingData';
 
 /*
 characterSet stores characters in this format 
@@ -52,7 +53,7 @@ class TypingTest {
 
             characterSet = this.getRandomCharacters();
             document.addEventListener('keydown', this.parseKeyboardInput);
-        })
+        });
     }
 
     clearInputs() {
@@ -84,11 +85,6 @@ class TypingTest {
     }
 
     parseKeyboardInput = ({key}) => {
-        if (gameState.isState("inactive")) {
-            gameState.start();
-        }
-
-        //TODO: redo the logic for backspacing, it is causing an issue where backspacing on a 3 letter character will result in no update.
         if (key == "Backspace") {
             if (kbInput == "") {
                 this.updateCharacterState("inactive", n => n - 1);
@@ -102,12 +98,16 @@ class TypingTest {
             return;
         }
 
-        if (key == "") {
+        if (key == " ") {
             return;
         }
 
         if (key.length != 1 || /\d/.test(key)) {
             return;
+        }
+
+        if (gameState.isState("inactive")) {
+            gameState.start();
         }
 
         kbInput += key;
