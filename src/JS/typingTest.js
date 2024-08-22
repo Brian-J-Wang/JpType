@@ -2,8 +2,6 @@ import charSet from './characterSet'
 import gameData from './gameData'
 import gameState from './gameState'
 import settings from './settings'
-
-import Hirigana from '../assets/hirigana.json'
 import { storage } from '../Components/Settings/settingData';
 
 /*
@@ -15,7 +13,6 @@ characterSet stores characters in this format
     id: numeric
     state: [active, correct, incorrect, inactive];
 }
-
 */
 
 const onUpdate = [];
@@ -33,7 +30,7 @@ class TypingTest {
 
         characterSet = this.shuffleCards();
 
-        document.addEventListener('keydown', this.parseKeyboardInput.bind(this));
+        document.addEventListener('keydown', this.parseKeyboardInput);
 
         gameState.onGameState("complete", () => {
             document.removeEventListener('keydown', this.parseKeyboardInput);
@@ -83,7 +80,10 @@ class TypingTest {
         characterSet = this.shuffleCards();
     }
 
-    parseKeyboardInput ({key}) {
+    parseKeyboardInput = ({key}) => {
+        
+        //TODO: add escape key to stop test;
+
         if (key == "Backspace") {
             if (kbInput == "") {
                 this.updateCharacterState("inactive", n => n - 1);
@@ -92,15 +92,17 @@ class TypingTest {
                 kbInput = kbInput.slice(0, kbInput.length - 1);
                 char.display = kbInput;
             }
-            this.callOnUpdate();
+            this.broadcastUpdate();
 
             return;
         }
 
+        //ignore space press
         if (key == " ") {
             return;
         }
 
+        //ignore non-single letter inputs and numbers
         if (key.length != 1 || /\d/.test(key)) {
             return;
         }
@@ -109,15 +111,17 @@ class TypingTest {
             gameState.start();
         }
 
+        //kbInput is necessary for characters that are longer than one letter;
         kbInput += key;
         const character = characterSet[currentChar];
         character.display = kbInput;
 
         if (kbInput.length < character.en.length) {
-            this.callOnUpdate();
+            this.broadcastUpdate();
             return;
         }
 
+        //checks for correctness only when the kbInput is the same length as character length in engish;
         if (kbInput.length >= character.en.length) {
             if (kbInput == character.en) {
                 this.updateCharacterState("correct", n => n + 1);
@@ -126,7 +130,7 @@ class TypingTest {
                 gameData.updateValue("errorCount", n => n + 1);
             }
             
-            this.callOnUpdate();
+            this.broadcastUpdate();
             return;
         }
     }
@@ -138,6 +142,8 @@ class TypingTest {
 
         currentChar = updater(currentChar);
         gameData.updateValue("charTyped", updater);
+
+        //completion checker is necessary here to prevent updating characters past the character list.
         if (currentChar >= characterSet.length) {
             gameState.complete();
             return;
@@ -148,7 +154,7 @@ class TypingTest {
         kbInput = "";
     }
 
-    onStateUpdate(funct) {
+    onUpdate(funct) {
         const notDuplicate = onUpdate.every(element => {
             (element.toString() == funct.toString()) ? false : true;
         })
@@ -158,7 +164,7 @@ class TypingTest {
         }
     }
 
-    callOnUpdate() {
+    broadcastUpdate() {
         onUpdate.forEach((funct) => {
             funct(characterSet);
         })

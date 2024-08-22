@@ -10,7 +10,7 @@ import typingTest from '../../JS/typingTest'
 function PracticeType(props) {
     const [characters, setCharacters] = useState(typingTest.getCurrentState());
     useEffect(() => {
-        typingTest.onStateUpdate((newState) => {
+        typingTest.onUpdate((newState) => {
             setCharacters(newState);
         })
 
