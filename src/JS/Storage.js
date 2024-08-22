@@ -1,5 +1,5 @@
 //wrapper classes to allow other classes to listen when a value is changed;
-class Storage {
+class storage {
     #values = {};
 
     //values are included to ensure there's no incorrect callbacks for the 
@@ -28,7 +28,7 @@ class Storage {
         localStorage.setItem(key, value);
 
         this.#values[key].forEach(funct => {
-            funct();
+            funct(value);
         })
     }
 
@@ -56,4 +56,4 @@ class Storage {
     }
 }
 
-export default Storage;
+export default storage;

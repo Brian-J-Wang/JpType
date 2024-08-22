@@ -35,6 +35,7 @@ export function numberInput(settings, onValueChanged = null) {
 
     function handleChange(event) {
         const { value } = event.target;
+        console.log( value );
         storage.set(settings.name, value);
 
         if (onValueChanged != null) {
@@ -44,7 +45,7 @@ export function numberInput(settings, onValueChanged = null) {
 
     return (
         <Scaffold key={settings.name} name={settings.name} desc={settings.description} direction='h'>
-            <input type="number" className='numberInput' defaultValue={getInitialValue(settings)} onChange={() => {handleChange()}}/>
+            <input type="number" className='numberInput' defaultValue={getInitialValue(settings)} onChange={handleChange}/>
         </Scaffold>
     )
 }
@@ -79,8 +80,4 @@ export function multiSelectCards(settings) {
     return (
         <Scaffold key={settings.name} name={settings.name} desc={settings.description} direction="v"></Scaffold>
     )
-}
-
-function textInput(setting) {
-
 }

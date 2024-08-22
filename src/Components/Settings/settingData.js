@@ -1,5 +1,5 @@
 import { multiSelectCards, numberInput, toggleInput } from "./settingBuilders";
-import Storage from "../../JS/Storage";
+import Storage from "../../JS/storage";
 
 export const settings = {
     General: [
@@ -19,6 +19,12 @@ export const settings = {
         }
     ],
     Appearance: [
+        {
+            name: 'Show Progress Bar',
+            description: 'Show the progress bar on the bottom of the typing board?',
+            defaultValue: true,
+            builder: function () { return toggleInput(this); }
+        },
         {
             name: 'Show Timer',
             description: `Show the timer on the bottom right side.`,

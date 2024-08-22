@@ -1,3 +1,4 @@
+import charSet from './characterSet'
 import gameData from './gameData'
 import gameState from './gameState'
 import settings from './settings'
@@ -24,23 +25,23 @@ let kbInput = "";
 
 
 class TypingTest {
+    charList = [];
     constructor() {
         gameData.addKeyValue("charCount", settings.characterCount);
         gameData.addKeyValue("charTyped", 0);
         gameData.addKeyValue("errorCount", 0);
 
-        characterSet = this.getRandomCharacters();
+        characterSet = this.shuffleCards();
 
-        document.addEventListener('keydown', this.parseKeyboardInput);
+        document.addEventListener('keydown', this.parseKeyboardInput.bind(this));
 
         gameState.onGameState("complete", () => {
             document.removeEventListener('keydown', this.parseKeyboardInput);
         });
 
         gameState.onGameState("reset", () => {
-            this.clearInputs();
+            this.resetBoard();
 
-            characterSet = this.getRandomCharacters();
             document.addEventListener('keydown', this.parseKeyboardInput);
         });
 
@@ -49,9 +50,7 @@ class TypingTest {
         })
 
         gameState.onGameState("return", () => {
-            this.clearInputs();
-
-            characterSet = this.getRandomCharacters();
+            this.resetBoard();
             document.addEventListener('keydown', this.parseKeyboardInput);
         });
     }
@@ -59,32 +58,32 @@ class TypingTest {
     clearInputs() {
         kbInput = "";
         currentChar = 0;
-        gameData.setValue("charCount", settings.characterCount);
+        gameData.setValue("charCount", storage.get("Character Count"));
         gameData.setValue("charTyped", 0);
         gameData.setValue("errorCount", 0);
         characterSet = [];
     }
     
-    getRandomCharacters() {
-        const characterList = [];
-    
-        for (let i = 0 ; i < settings.characterCount; i++) {
-            const index = Math.floor(Math.random() * Hirigana.characters.length);
-            characterList[i] = {
-                en: Hirigana.characters[index].en,
-                jp: Hirigana.characters[index].jp,
+    shuffleCards() {
+        const charList = charSet.shuffle().map((char, index) => {
+            return {
+                en: char.en,
+                jp: char.jp,
                 display: "",
-                id: i,
-                state: (i == 0)? "active" : "inactive"
-            };
-        }
+                id: index,
+                state: (index == 0)? "active" : "inactive"
+            }
+        });
 
-        gameData.setValue("charCount", settings.characterCount);
-    
-        return characterList;
+        return charList;
+    };
+
+    resetBoard() {
+        this.clearInputs();
+        characterSet = this.shuffleCards();
     }
 
-    parseKeyboardInput = ({key}) => {
+    parseKeyboardInput ({key}) {
         if (key == "Backspace") {
             if (kbInput == "") {
                 this.updateCharacterState("inactive", n => n - 1);
