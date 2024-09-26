@@ -1,4 +1,4 @@
-import charSet from './characterSet'
+import charSet from './charSet'
 import gameData from './gameData'
 import gameState from './gameState'
 import settings from './settings'

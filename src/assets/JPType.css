@@ -1,17 +1,20 @@
 .jpType__button {
-    background-color: #272727;
-    color: whitesmoke;
+    background-color: whitesmoke;
+    color: #272727;
     padding: 7px 20px;
     font-family: 'open sans', Helvetica, Arial, sans-serif;
     font-size: 20px;
-    border-radius: 5px;
+    border-radius: 2px;
     font-weight: 700;
-    border: none;
-    transition: color 0.2s ease-in-out;
+    border: 1px solid #999999;
+    transition: all 0.2s ease-in-out;
+    
 }
 
 .jpType__button:hover {
     color: #74a12e;
+    border: 1px solid #74a12e;
+    box-shadow: 1px 1px #999999;
 }
 
 .jpType__button:active {

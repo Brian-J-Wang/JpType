@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './settingBuilders.css'
 import { storage } from './settingData';
 
-function Scaffold(props) {
+export function Scaffold(props) {
     return (
         <div className={`scaffold ${props.direction == "v" && 'scaffold__vertical'}`}>
             <div className={`scaffold__option-details ${props.direction == "v" && 'scaffold__option-details__direction_vertical'}`}>

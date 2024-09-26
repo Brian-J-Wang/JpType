@@ -1,0 +1,65 @@
+.kana {
+    min-height: 36px;
+    box-shadow: 0px 0px 10px #b9b9b9;
+    border-radius: 5px;
+    margin: 5px 0px;
+    overflow: hidden;
+    transition: height 0.15s ease-in-out;
+}
+
+.kana__state_active {
+}
+
+.kana__title-card {
+    background-color: white;
+    height: 36px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.kana__title-card-left {
+    display: flex;
+}
+
+.kana__title-card-left:hover {
+    cursor: pointer;
+}
+
+.kana__state-image {
+    margin: 6px;
+    height: 24px;
+    width: 24px;
+}
+
+.kana__kana-name {
+    margin: auto auto auto 2px;
+    color: #272727;
+    font-size: 20px;
+}
+
+.kana__advanced {
+    margin: auto 10px;
+    font-size: 12px;
+    border: none;
+    background-color: white;
+    opacity: 40%;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.kana__advanced:hover {
+    opacity: 100%;
+    cursor: pointer;
+}
+
+.kana__advanced__state_active {
+    opacity: 100%;
+    color: #74A12E;
+}
+
+.kana__subGroup {
+    margin: 5px;
+    height: calc(100% - 36px - 10px);
+
+}
+

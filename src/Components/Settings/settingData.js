@@ -1,4 +1,5 @@
 import { multiSelectCards, numberInput, toggleInput } from "./settingBuilders";
+import { characterSelection } from "./Custom/characterSelection";
 import Storage from "../../JS/storage";
 
 export const settings = {
@@ -12,10 +13,9 @@ export const settings = {
         },
         {
             name: "Character Selection",
-            description: "characters included in the test",
             inputType: "checkBoxCards",
             defaultValue: {},
-            builder: function () { return multiSelectCards(this); }
+            builder: function () { return characterSelection(this); }
         }
     ],
     Appearance: [
