@@ -6,6 +6,15 @@
     margin: 200px auto;
 }
 
+.practice__header {
+    opacity: 100%;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.practice__header__state_hidden {
+    opacity: 0%;
+}
+
 .practice__menu-bar {
     display: flex;
     gap: 8px;
@@ -15,6 +24,12 @@
 
 .practice__menu-bar__state_hidden {
     opacity: 0%;
+}
+
+.practice__quick-settings {
+    display: flex;
+    gap: 8px;
+    padding: 8px 0px;
 }
 
 .practice__footer {

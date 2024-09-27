@@ -4,25 +4,15 @@ import { useEffect, useState } from 'react'
 import gameState from '../../JS/gameState';
 import stathandle from '../../JS/statsHandler';
 
-
-const visibleState = 'stat-panel';
-const hiddenState = 'stat-panel stat-panel__state_hidden';
-
-
 function StatPanel() {
-    const [panelState, setPanelState] = useState(visibleState);
     const [stats, setStats] = useState([]);
     useEffect(() => {
 
         setStats(stathandle.get());
 
         const ids = [
-            gameState.onGameState("active", () => {
-                setPanelState(hiddenState);
-            }),
             gameState.onGameState("complete",() => {
-                setPanelState(visibleState);
-                calculateStats();
+                setStats(stathandle.get());
             }, 3)
         ];
 
@@ -31,12 +21,8 @@ function StatPanel() {
         }
     },[]);
 
-    const calculateStats = () => {
-        setStats(stathandle.get());
-    }
-
     return (
-        <div className={panelState}>
+        <div className="stat-panel">
             {
                 stats.map((element) => {
                     return (

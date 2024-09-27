@@ -59,23 +59,21 @@ function Practice(props) {
         }
     }, []);
 
-    //functions for hidding the button states;
-    const [buttonBarState, setButtonBarState] = useState("practice__button-bar");
+    //function for hiding the header when the game begins;
+    const [headerState, setHeaderState] = useState("practice__header");
     useEffect(() => {
-
         const ids = [
             gameState.onGameState("active", () => {
-                setButtonBarState('practice__button-bar button-bar__state_hidden');
+                setHeaderState('practice__header practice__header__state_hidden');
             }),
             gameState.onGameState("complete", () => {
-                setButtonBarState('practice__button-bar');
+                setHeaderState('practice__header');
             })
         ]
 
         return () => {
             gameState.removeCallbacks(ids);
         }
-        
     }, []);
 
     //progress bar logic 
@@ -115,22 +113,6 @@ function Practice(props) {
         }
     }
 
-    const [menuBarClasses, setMenuBarClasses] = useState("practice__menu-bar");
-    useEffect(() => {
-        const ids = [
-            gameState.onGameState("active", () => {
-                setMenuBarClasses("practice__menu-bar practice__menu-bar__state_hidden");
-            }),
-            gameState.onGameState("complete", () => {
-                setMenuBarClasses("practice__menu-bar");
-            })
-        ]
-        
-        return () => {
-            gameState.removeCallbacks(ids);
-        }   
-    }, [])
-
     const navigate = useNavigate();
     const onSettingClicked = () => {
         gameState.exit();
@@ -143,11 +125,19 @@ function Practice(props) {
 
     return (
         <div className="practice">
-            <div className={menuBarClasses}>
-                <button onClick={onSettingClicked} className="jpType__button">Settings</button>
-                <button onClick={onProfileClicked} className="jpType__button">Profile</button>
+            <div className={headerState}>
+                <div className="practice__menu-bar">
+                    <button onClick={onSettingClicked} className="jpType__button">Settings</button>
+                    <button onClick={onProfileClicked} className="jpType__button">Profile</button>
+                </div>
+                <StatPanel/>
+                <div className="practice__quick-settings">
+                    <button className="jpType__square-button">10</button>
+                    <button className="jpType__square-button">30</button>
+                    <button className="jpType__square-button">50</button>
+                    <button className="jpType__square-button">Custom</button>
+                </div>
             </div>
-            <StatPanel/>
             <PracticeType/>
             <div className="practice__footer">
                 <ProgressBar className="practice-progress" progress={progress}></ProgressBar>
