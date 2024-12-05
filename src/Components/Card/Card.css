@@ -23,6 +23,12 @@
     margin: 0px;
 }
 
+.card__hidden {
+    height: 0px;
+    overflow: hidden;
+    margin: 0px;
+}
+
 .card__en__state_hidden {
     color: rgba(0, 0, 0, 0.0);
 }
@@ -37,7 +43,7 @@
 
 .card__state_active {
     color: rgba(0, 0, 0, 0.4);
-    animation: caret 1s ease-in-out infinite alternate;
+    animation: caret 0.5s ease-in-out infinite alternate;
 }
 
 .card__state_correct {

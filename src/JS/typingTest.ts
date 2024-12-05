@@ -14,21 +14,44 @@ characterSet stores characters in this format
     state: [active, correct, incorrect, inactive];
 }
 */
+type TypingTestEventListenerFunction = (charSet: Character[]) => void;
+
+enum CharacterState {
+    active = "active",
+    inactive = "inactive",
+    correct = "correct",
+    incorrect = "incorrect"
+}
+
+export enum TypingTestEventTypes {
+    onUpdate = "onUpdate",
+    onCharacterChange = "onCharacterChange",
+    onCharacterForward = "onCharacterForward",
+    onCharacterBackward = "onCharacterBackward"
+}
+
+export interface Character {
+    en: string,
+    jp: string,
+    display: string,
+    id: number,
+    state: CharacterState
+}
 
 const onUpdate = [];
-let characterSet = [];
 let currentChar = 0;
 let kbInput = "";
 
 
 class TypingTest {
+    characterSet: Character[] = [];
     charList = [];
     constructor() {
         gameData.addKeyValue("charCount", settings.characterCount);
         gameData.addKeyValue("charTyped", 0);
         gameData.addKeyValue("errorCount", 0);
 
-        characterSet = this.shuffleCards();
+        this.characterSet = this.shuffleCards() as Character[];
 
         document.addEventListener('keydown', this.parseKeyboardInput);
 
@@ -58,26 +81,27 @@ class TypingTest {
         gameData.setValue("charCount", storage.get("Character Count"));
         gameData.setValue("charTyped", 0);
         gameData.setValue("errorCount", 0);
-        characterSet = [];
+        this.characterSet = [];
     }
     
-    shuffleCards() {
+    shuffleCards(): Character[] {
         const charList = charSet.shuffle().map((char, index) => {
             return {
                 en: char.en,
                 jp: char.jp,
                 display: "",
                 id: index,
-                state: (index == 0)? "active" : "inactive"
+                state: (index == 0)? "active" : "inactive",
+                row: -1
             }
         });
 
-        return charList;
+        return charList as Character[];
     };
 
     resetBoard() {
         this.clearInputs();
-        characterSet = this.shuffleCards();
+        this.characterSet = this.shuffleCards();
     }
 
     parseKeyboardInput = ({key}) => {
@@ -88,22 +112,17 @@ class TypingTest {
             if (kbInput == "") {
                 this.updateCharacterState("inactive", n => n - 1);
             } else {
-                let char = characterSet[currentChar];
+                let char = this.characterSet[currentChar];
                 kbInput = kbInput.slice(0, kbInput.length - 1);
                 char.display = kbInput;
             }
-            this.broadcastUpdate();
+            this.broadcastListener(TypingTestEventTypes.onUpdate);
 
             return;
         }
 
-        //ignore space press
-        if (key == " ") {
-            return;
-        }
-
-        //ignore non-single letter inputs and numbers
-        if (key.length != 1 || /\d/.test(key)) {
+        //ignore space press, meta inputs, and numbers
+        if (key == " " || key.length != 1 || /\d/.test(key)) {
             return;
         }
 
@@ -113,11 +132,11 @@ class TypingTest {
 
         //kbInput is necessary for characters that are longer than one letter;
         kbInput += key;
-        const character = characterSet[currentChar];
+        const character = this.characterSet[currentChar];
         character.display = kbInput;
 
         if (kbInput.length < character.en.length) {
-            this.broadcastUpdate();
+            this.broadcastListener(TypingTestEventTypes.onUpdate);
             return;
         }
 
@@ -130,13 +149,14 @@ class TypingTest {
                 gameData.updateValue("errorCount", n => n + 1);
             }
             
-            this.broadcastUpdate();
+            this.broadcastListener(TypingTestEventTypes.onUpdate);
+            this.broadcastListener(TypingTestEventTypes.onCharacterForward);
             return;
         }
     }
 
     updateCharacterState(state, updater) {
-        let char = characterSet[currentChar];
+        let char = this.characterSet[currentChar];
         char.state = state;
         char.display = "";
 
@@ -144,35 +164,49 @@ class TypingTest {
         gameData.updateValue("charTyped", updater);
 
         //completion checker is necessary here to prevent updating characters past the character list.
-        if (currentChar >= characterSet.length) {
+        if (currentChar >= this.characterSet.length) {
             gameState.complete();
             return;
         }
 
-        char = characterSet[currentChar];
-        char.state = "active";
+        char = this.characterSet[currentChar];
+        char.state = CharacterState.active;
         kbInput = "";
     }
 
-    onUpdate(funct) {
-        const notDuplicate = onUpdate.every(element => {
-            (element.toString() == funct.toString()) ? false : true;
-        })
-
-        if (notDuplicate) {
-            onUpdate.push(funct);
-        }
-    }
-
-    broadcastUpdate() {
-        onUpdate.forEach((funct) => {
-            funct(characterSet);
+    broadcastListener(type: TypingTestEventTypes) {
+        (this.eventListeners[type] as Array<any>).forEach((listener) => {
+            listener(this.characterSet);
         })
     }
 
-    getCurrentState() {
-        return characterSet;
+    getCurrentState() : Character[] {
+        return this.characterSet;
     }
+
+    eventListeners: EventListenerObject = {
+        onUpdate: [],
+        onCharacterChange: [],
+        onCharacterForward: [],
+        onCharacterBackward: []
+    }
+
+    addEventListener(eventType: TypingTestEventTypes, eventListener: (charSet: Character[]) => void) {
+        (this.eventListeners[eventType] as Array<any>).push(eventListener);
+    }
+
+    removeEventListener(eventType, eventListener: (charSet: Character[]) => void) {
+        this.eventListeners[eventType] = (this.eventListeners[eventType] as Array<any>).filter((listener) => {
+            return listener != eventListener
+        });
+    }
+}
+
+type EventListenerObject = {
+    onUpdate: ((charSet: Character[]) => void)[],
+    onCharacterChange: ((charSet: Character[]) => void)[],
+    onCharacterForward: ((charSet: Character[]) => void)[],
+    onCharacterBackward: ((charSet: Character[]) => void)[],
 }
 
 const typingTest = new TypingTest();

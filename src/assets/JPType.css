@@ -12,6 +12,7 @@
 }
 
 .jpType__button:hover {
+    cursor: pointer;
     color: #74a12e;
     border: 1px solid #74a12e;
     box-shadow: 1px 1px #999999;
@@ -23,10 +24,13 @@
 }
 
 .jpType__square-button {
+    height: 36px;
+    min-width: 36px;
     background-color: whitesmoke;
     color: #272727;
     padding: 7px;
     font-family: 'open sans', Helvetica, Arial, sans-serif;
+    font-weight: 700;
     font-size: 16px;
     border-radius: 2px;
     border: 1px solid #999999;
@@ -34,11 +38,24 @@
 }
 
 .jpType__square-button:hover {
+    cursor: pointer;
     color: #74a12e;
     border: 1px solid #74a12e;
-    cursor: pointer;
+    box-shadow: 1px 1px #999999;
+}
+
+.jpType__square-button__active {
+    color: whitesmoke;
+    border: 1px solid #74a12e;
+    background-color: #74a12e;
+    box-shadow: 1px 1px 1px #272727;
 }
 
 .jpType__square-button:active {
     
+}
+
+.jpType__icon-small {
+    height: 20px;
+    width: 20px;
 }

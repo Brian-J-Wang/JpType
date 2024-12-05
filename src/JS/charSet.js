@@ -25,7 +25,7 @@ const charGroupTemplate = {
 
 class CharacterSet {
     _characterList = [];
-    _listLength = 10;
+    _listLength = 50;
 
     constructor() {
         this._charGroups = this._getCharGroup();

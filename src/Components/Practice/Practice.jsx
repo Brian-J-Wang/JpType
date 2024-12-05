@@ -1,7 +1,7 @@
 import './Practice.css'
 import '../../assets/JPType.css'
 import StatPanel from '../StatPanel/StatPanel'
-import PracticeType from '../PracticeType/PracticeType'
+import PracticeType from '../PracticeType/PracticeType.tsx'
 import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import gameState from '../../JS/gameState'
@@ -9,6 +9,7 @@ import gameData from '../../JS/gameData'
 import Timer from '../../JS/timer'
 import Clock from '../Clock/Clock'
 import ProgressBar from '../ProgressBar/ProgressBar'
+import settingIcon from '../../assets/setting.svg'
 
 
 function Practice(props) {
@@ -132,6 +133,9 @@ function Practice(props) {
                 </div>
                 <StatPanel/>
                 <div className="practice__quick-settings">
+                    <button className="jpType__square-button"> 
+                        <img className="jpType__icon-small"src={settingIcon} alt="Settings" /> 
+                    </button>
                     <button className="jpType__square-button">10</button>
                     <button className="jpType__square-button">30</button>
                     <button className="jpType__square-button">50</button>
