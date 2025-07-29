@@ -69,8 +69,6 @@ function PracticeType(props) {
                 numRows.current = row;
 
                 cumulativeLength += cardWidth
-
-                console.log(cumulativeLength + cardWidth, width * (row + 1))
                 //checks if the next card is going to fit in the remaining space
                 if (cumulativeLength + cardWidth > width * (row + 1)) {
                     cumulativeLength = width * (row + 1);

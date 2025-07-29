@@ -1,6 +1,8 @@
+import UseLocalStorage from "../../Hooks/UseLocalStorage";
 import "./Clock.css"
 
 function Clock(props) {
+    const [ showTimer ] = UseLocalStorage("showTimer");
 
     const formatSeconds = () => {
         if (props.seconds < 10) {
@@ -21,7 +23,7 @@ function Clock(props) {
     }
 
     return (
-        <div className="clock">
+        <div className="clock" hidden={!showTimer}>
             <p className="clock__time">
                 {props.minutes}:{formatSeconds()}<span className="clock__ms">{formatMilli()}</span>
             </p>

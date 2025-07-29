@@ -1,0 +1,13 @@
+.body {
+    width: 64px;
+    padding: 2px 2px;
+    border: 1px solid #292929;
+    box-shadow: #292929  1px 1px 0px 0px;
+    outline: none;
+}
+
+input.body::-webkit-outer-spin-button,
+input.body::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

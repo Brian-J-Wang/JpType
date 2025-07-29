@@ -3,7 +3,7 @@ import './App.css'
 import './assets/normalize.css'
 import Header from './Components/Header/Header'
 import Practice from './Components/Practice/Practice'
-import Settings from './Components/Settings/Settings'
+import SettingsPage from './Pages/settings/settingsPage'
 import Profile from './Components/Profile/Profile'
 import Footer from './Components/Footer/Footer'
 import { createBrowserRouter, RouterProvider, Link, Outlet } from 'react-router-dom'
@@ -28,8 +28,8 @@ function App() {
 					element: <Practice/>
 				},
 				{
-					path: "/settings",
-					element: <Settings/>
+					path: "/settings/*",
+					element: <SettingsPage/>
 				},
 				{
 					path: "/profile",

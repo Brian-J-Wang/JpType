@@ -2,7 +2,6 @@ import charSet from './charSet'
 import gameData from './gameData'
 import gameState from './gameState'
 import settings from './settings'
-import { storage } from '../Components/Settings/settingData';
 
 /*
 characterSet stores characters in this format 
@@ -78,7 +77,7 @@ class TypingTest {
     clearInputs() {
         kbInput = "";
         currentChar = 0;
-        gameData.setValue("charCount", storage.get("Character Count"));
+        gameData.setValue("charCount", 50);
         gameData.setValue("charTyped", 0);
         gameData.setValue("errorCount", 0);
         this.characterSet = [];

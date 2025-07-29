@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import './settingBuilders.css'
-import { storage } from './settingData';
 
 export function Scaffold(props) {
     return (
@@ -22,13 +21,6 @@ export function Scaffold(props) {
 
 //localStorage saves values as string
 function getInitialValue({ name, defaultValue}) {
-    const value = storage.get(name);
-    if (value == null) {
-        storage.set(name, defaultValue);
-        return defaultValue;
-    } else {
-        return value;
-    }
 }
 
 export function numberInput(settings, onValueChanged = null) {
@@ -36,7 +28,6 @@ export function numberInput(settings, onValueChanged = null) {
     function handleChange(event) {
         const { value } = event.target;
         console.log( value );
-        storage.set(settings.name, value);
 
         if (onValueChanged != null) {
             onValueChanged(value);

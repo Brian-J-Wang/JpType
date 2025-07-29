@@ -1,0 +1,23 @@
+.body {
+    border: 1px solid #292929;
+    background-color: #D73A3A;
+    width: 36px;
+    height: 20px;
+    box-shadow: #292929 1px 1px 0px 0px ;
+}
+
+.body_active {
+    background-color: #74A12E;
+}
+
+.nub {
+    background-color: white;
+    margin: 2px 2px 2px 2px;
+    height: 16px;
+    width: 12px;
+    transition: margin 0.05s ease-in;
+}
+
+.nub_active {
+    margin: 2px 2px 2px 22px;
+}

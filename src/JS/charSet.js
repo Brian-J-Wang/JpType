@@ -1,5 +1,4 @@
 import Hirigana from '../assets/hirigana.json';
-import { storage } from '../Components/Settings/settingData';
 
 const charGroupTemplate = {
     hirigana: {
@@ -30,11 +29,7 @@ class CharacterSet {
     constructor() {
         this._charGroups = this._getCharGroup();
         this._characterList = this.getCharacterList();
-        this._listLength = storage.get("Character Count");
-
-        storage.addListener("Character Count", (value) => {
-            this._listLength = value;
-        });
+        this._listLength = 50;
         //TODO: add listener when character filtering gets added;
     }
 

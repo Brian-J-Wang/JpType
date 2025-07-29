@@ -1,6 +1,5 @@
 import { multiSelectCards, numberInput, toggleInput } from "./settingBuilders";
 import { characterSelection } from "./Custom/characterSelection";
-import Storage from "../../JS/storage";
 
 export const settings = {
     General: [
@@ -48,13 +47,3 @@ export const settings = {
 
     ]
 }
-
-const validKeys = [];
-
-Object.keys(settings).forEach(tab => {
-    settings[tab].forEach(setting => {
-        validKeys.push(setting.name);
-    })
-});
-
-export const storage = new Storage( validKeys );

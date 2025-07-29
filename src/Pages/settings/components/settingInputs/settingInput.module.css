@@ -1,0 +1,28 @@
+.body {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    width: 100%;
+    justify-content: space-between;
+    padding: 12px 24px;
+    transition: background-color 0.05s ease-in;
+}
+
+
+.body:hover {
+    background-color: gainsboro;
+}
+
+.leftSide {
+
+}
+
+.leftSide__title {
+    margin: 0px 0px 4px 0px;
+    height: 22px;
+
+}
+
+.rightSide {
+
+}
