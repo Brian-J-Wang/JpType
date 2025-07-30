@@ -1,15 +1,19 @@
-
+type elapsedTime = {
+    minutes: number,
+    seconds: number,
+    ms: number
+}
 //time that passed in ms
-export default class Timer {
+export default class Stopwatch {
+    private _elapsedTime: number;
+    private _hasStarted: boolean;
+    private _state: "standby" | "running" | "paused" | "complete";
+    private _startTime: number;
+    private _interval: number;
+
     constructor() {
         this._elapsedTime = 0; //measured in ms
         this._hasStarted = false;
-
-        // timer states:
-        // standby
-        // running
-        // paused
-        // complete
         this._state = "standby";
     }
 
@@ -17,9 +21,12 @@ export default class Timer {
         return this._state;
     }
 
-    start() {
+    start(fn: (elapsedTime: elapsedTime) => void, interval: number) {
         this._state = "running";
         this._startTime = Date.now();
+        this._interval = setInterval(() => {
+            fn(this.getElapsedTime());
+        }, interval);
     }
 
     pause() {
@@ -45,6 +52,7 @@ export default class Timer {
     end() {
         this._state = "complete";
         this._elapsedTime += Date.now() - this._startTime;
+        clearInterval(this._interval);
     }
 
     reset() {

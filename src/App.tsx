@@ -2,7 +2,7 @@ import './assets/Fonts/fonts.css'
 import './App.css'
 import './assets/normalize.css'
 import Header from './Components/Header/Header'
-import Practice from './Components/Practice/Practice'
+import PracticePage from './Pages/practice/practicePage'
 import SettingsPage from './Pages/settings/settingsPage'
 import Profile from './Components/Profile/Profile'
 import Footer from './Components/Footer/Footer'
@@ -25,7 +25,7 @@ function App() {
 			children: [
 				{
 					path: "/",
-					element: <Practice/>
+					element: <PracticePage/>
 				},
 				{
 					path: "/settings/*",

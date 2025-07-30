@@ -1,44 +1,45 @@
-.practice {
+.page {
     max-width: 1000px;
     padding: 0px 200px;
     background-color: whitesmoke;
     margin: 200px auto;
 }
 
-.practice__header {
+.header {
     opacity: 100%;
     transition: opacity 0.3s ease-in-out;
 }
 
-.practice__header__state_hidden {
+.header_hidden {
     opacity: 0%;
 }
 
-.practice__menu-bar {
+.header__topBar {
     display: flex;
     gap: 8px;
     margin-bottom: 8px;
     transition: opacity 0.3s ease-in;
 }
 
-.practice__menu-bar__state_hidden {
-    opacity: 0%;
-}
-
-.practice__quick-settings {
+.header__quickSettings {
     display: flex;
     gap: 8px;
     padding: 8px 0px;
 }
 
-.practice__footer {
+.footer {
     display: flex;
-    justify-content: end;
+    flex-direction: column;
     padding: 15px;
     margin: 0px auto;
+    transition: opacity 0.3s ease-in-out;
 }
 
-.practice-progress {
+.footer__stats {
+    display: flex;
+}
+
+.progressBar {
     margin-left: 0px;
     transition: margin-left 0.3s ease-in-out;
 }
@@ -48,27 +49,12 @@
     width: 10px;
 }
 
-.practice__button-bar {
+.footer__buttonBar{
     display: flex;
     justify-content: center;
-    transition: opacity 0.3s ease-in-out;
+    
 }
 
-.button-bar__state_hidden {
+.footer__buttonBar_hidden {
     opacity: 0%;
-}
-
-.practice__reset {
-    font-weight: 600;
-    font-size: 20px;
-    padding: 5px 20px;
-    border-radius: 5px;
-    border: 1px solid white;
-    background-color: #272727;
-    color: whitesmoke;
-    transition: color 0.2s ease-in-out;
-}
-
-.practice__reset:hover {
-    color: #74a12e;
 }
