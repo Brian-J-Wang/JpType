@@ -1,7 +1,7 @@
 import './PracticeType.css'
 import React, { createContext, RefObject, useContext, useEffect, useRef, useState } from 'react'
 import Card, { CardHandle } from '../Card/Card'
-import gameState from '../../JS/gameState'
+import gameState from '../../../../JS/gameState'
 import typingTest, { Character, TypingTestEventTypes } from '../../JS/typingTest'
 
 interface CardRendererContextProps {

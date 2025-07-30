@@ -15,7 +15,7 @@
     cursor: pointer;
     color: #74a12e;
     border: 1px solid #74a12e;
-    box-shadow: 1px 1px #999999;
+    box-shadow: 1px 1px #74a12e;
 }
 
 .jpType__button:active {
@@ -41,7 +41,7 @@
     cursor: pointer;
     color: #74a12e;
     border: 1px solid #74a12e;
-    box-shadow: 1px 1px #999999;
+    box-shadow: 1px 1px #74a12e;
 }
 
 .jpType__square-button__active {
