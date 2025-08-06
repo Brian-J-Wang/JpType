@@ -1,6 +1,6 @@
 import React, { useState, RefObject, forwardRef, useImperativeHandle, useContext } from 'react';
-import './Card.css'
-import { PracticeTypeContext } from '../PracticeType/PracticeType';
+import './Card.css';
+import { PracticeTypeContext } from '../practiceType/PracticeType';
 
 const Card = forwardRef<CardHandle, CardProps>((props, ref) => {
     const practiceTypeContext = useContext(PracticeTypeContext);

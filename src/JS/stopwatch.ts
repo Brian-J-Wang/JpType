@@ -8,8 +8,8 @@ export default class Stopwatch {
     private _elapsedTime: number;
     private _hasStarted: boolean;
     private _state: "standby" | "running" | "paused" | "complete";
-    private _startTime: number;
-    private _interval: number;
+    private _startTime: number = 0;
+    private _interval: number = 10;
 
     constructor() {
         this._elapsedTime = 0; //measured in ms
@@ -26,7 +26,7 @@ export default class Stopwatch {
         this._startTime = Date.now();
         this._interval = setInterval(() => {
             fn(this.getElapsedTime());
-        }, interval);
+        }, interval < 10 ? 10 : interval);
     }
 
     pause() {

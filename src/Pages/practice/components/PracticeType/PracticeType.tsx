@@ -1,8 +1,8 @@
 import './PracticeType.css'
 import React, { createContext, RefObject, useContext, useEffect, useRef, useState } from 'react'
-import Card, { CardHandle } from '../Card/Card'
+import Card, { CardHandle } from '../characterCard/Card'
 import gameState from '../../../../JS/gameState'
-import typingTest, { Character, TypingTestEventTypes } from '../../JS/typingTest'
+import typingTest, { Character, TypingTestEventTypes } from '../../../../JS/typingTest'
 
 interface CardRendererContextProps {
     currentRow: number
@@ -25,9 +25,7 @@ interface CharacterProps extends Character {
     row: number
 }
 
-
-
-function PracticeType(props) {
+const PracticeType: React.FC = () => {
     const [characters, setCharacters] = useState<CharacterProps[]>(typingTest.getCurrentState() as CharacterProps[]);
     const characterCards = useRef<HTMLDivElement[]>([]);
     const characterCardHandles = useRef<CardHandle[]>([]);
@@ -44,6 +42,7 @@ function PracticeType(props) {
         }, 2);
 
         return () => {
+            //@ts-ignore
             gameState.removeCallback(id);
             typingTest.removeEventListener(TypingTestEventTypes.onUpdate, updateCharacterState);
         }
@@ -119,6 +118,7 @@ function PracticeType(props) {
             <div id="practice-type" className={`practice-type`} ref={practiceWindow}>
                 {
                     characters.map((element,index) => <Card key={element.id} data={element} 
+                        //@ts-ignore
                         ref={(el) => (characterCardHandles.current[index] = el ?? {setRow: () => {}})}
                         //@ts-ignore - it works, trust me
                         elementReference={el => (characterCards.current[index] = el)}

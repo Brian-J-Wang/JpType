@@ -4,9 +4,8 @@ import './assets/normalize.css'
 import Header from './Components/Header/Header'
 import PracticePage from './Pages/practice/practicePage'
 import SettingsPage from './Pages/settings/settingsPage'
-import Profile from './Components/Profile/Profile'
-import Footer from './Components/Footer/Footer'
 import { createBrowserRouter, RouterProvider, Link, Outlet } from 'react-router-dom'
+import Profile from './Pages/profile/Profile'
 
 function App() {
 

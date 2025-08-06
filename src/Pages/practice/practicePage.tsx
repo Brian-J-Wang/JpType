@@ -1,24 +1,20 @@
 import '../../assets/JPType.css'
-import StatPanel from '../../Components/StatPanel/StatPanel.jsx'
-import PracticeType from '../../Components/PracticeType/PracticeType.tsx'
-import { useState, useRef, useEffect } from 'react'
+import StatPanel from './components/statPanel/StatPanel'
+import PracticeType from './components/practiceType/PracticeType'
+import { useState, useRef, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import gameState from '../../JS/gameState.js'
-import gameData from '../../JS/gameData.js'
 import Stopwatch from '../../JS/stopwatch.js'
-import Clock from '../../Components/Clock/Clock.tsx'
-import ProgressBar from '../../Components/ProgressBar/ProgressBar.jsx'
+import Clock from '../../Components/Clock/Clock'
+import ProgressBar from '../../Components/ProgressBar/ProgressBar'
 import settingIcon from '../../assets/setting.svg'
 
 import styles from "./practice.module.css"
+import { SessionDataContext } from './components/sessionData/sessionDataProvider'
 
 
 function PracticePage(props) {
-    //global variable declaration
-    useEffect(() => {
-        gameData.addKeyValue("progress", 0.0);
-        gameData.addKeyValue("totalTime", 0.0);
-    }, [])
+    const sessionDataContext = useContext(SessionDataContext);
 
     //stopwatch functions
     const stopwatch = useRef(new Stopwatch());
@@ -42,7 +38,7 @@ function PracticePage(props) {
             }),
             gameState.onGameState("complete", () => {
                 stopwatch.current.end();
-                gameData.setValue("totalTime", stopwatch.current.getElaspedTimeSeconds());
+                sessionDataContext.setElapsedTime(stopwatch.current.getElaspedTimeSeconds());
             }),
             gameState.onGameState("reset", () => {
                 stopwatch.current.reset();
@@ -84,15 +80,7 @@ function PracticePage(props) {
             const charCount = gameData.getValue("charCount");
             const charTyped = gameData.getValue("charTyped");
             gameData.setValue("progress", charTyped / charCount);
-        })
-
-        gameData.onValueUpdated("progress", (value) => {
-            if (value > 1.0) {
-                setProgress(1.0);
-            } else {
-                setProgress(value);
-            }
-        })
+        });
         
         return () => {
             gameData.clearOnUpdateFunctions("progress");
@@ -144,7 +132,7 @@ function PracticePage(props) {
             <PracticeType/>
             <div className={ styles.footer }>
                 <div className={ styles.footer__stats }>
-                    <ProgressBar className={ styles.progressBar } progress={progress}></ProgressBar>
+                    <ProgressBar className={ styles.progressBar } progress={sessionDataContext.progress}></ProgressBar>
                     <Clock minutes={timeData.minutes} seconds={timeData.seconds} milli={timeData.ms}/>
                 </div>
                 <div className={`${styles.footer__buttonBar} ${!gameState.isState("complete") && styles.footer__buttonBar_hidden}`}>

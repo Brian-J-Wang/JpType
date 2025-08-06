@@ -4,7 +4,7 @@ type stateFunctionCallback = {
     stage: number
 }
 
-type voidFunction = () => {}
+type voidFunction = () => void
 
 type gameStateType = "inactive" | "active" | "paused" | "resumed" | "complete" | "reset" | "exit" | "return";
 
@@ -61,11 +61,10 @@ class GameState {
     }
 
     //stage refers to the order in which functions should execute, higher numbers are executed last.
-    onGameState(gameState: gameStateType, funct: () => {}, stage = 1) {
+    onGameState(gameState: gameStateType, funct: () => void, stage = 1) {
         //invalid state
         if (this.stateFunctions[gameState] == null) {
-            console.log(`state: ${gameState} does not exist`);
-            return;
+            throw new Error(`state: ${gameState} does not exist`);
         }
 
         //duplicate
