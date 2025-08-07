@@ -1,19 +1,15 @@
 import '../../assets/JPType.css'
-import StatPanel from './components/statPanel/StatPanel'
-import PracticeType from './components/practiceType/PracticeType'
 import { useState, useRef, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import gameState from '../../JS/gameState.js'
 import Stopwatch from '../../JS/stopwatch.js'
 import Clock from '../../Components/Clock/Clock'
-import ProgressBar from '../../Components/ProgressBar/ProgressBar'
+import { ProgressBar, SessionDataContext, StatPanel, PracticeType } from './components'
 import settingIcon from '../../assets/setting.svg'
 
 import styles from "./practice.module.css"
-import { SessionDataContext } from './components/sessionData/sessionDataProvider'
 
-
-function PracticePage(props) {
+const PracticePage: React.FC = () => {
+    const navigate = useNavigate();
     const sessionDataContext = useContext(SessionDataContext);
 
     //stopwatch functions
@@ -23,87 +19,43 @@ function PracticePage(props) {
         seconds: 0,
         ms: 0
     });
+
     useEffect(() => {
-        const ids = [
-            gameState.onGameState("active", () => {
+        switch ( sessionDataContext.testState ) {
+            case "active":
                 stopwatch.current.start((elapsedTime) => {
                     setTimeData(elapsedTime);
                 }, 10);
-            }),
-            gameState.onGameState("paused", () => {
-                stopwatch.current.pause();
-            }),
-            gameState.onGameState("resumed", () => {
-                stopwatch.current.resume();
-            }),
-            gameState.onGameState("complete", () => {
+                break;
+            case "complete":
                 stopwatch.current.end();
                 sessionDataContext.setElapsedTime(stopwatch.current.getElaspedTimeSeconds());
-            }),
-            gameState.onGameState("reset", () => {
+                break;
+            case "paused":
+                stopwatch.current.pause();
+                break;
+            case "reset":
                 stopwatch.current.reset();
                 setTimeData({
                     minutes: 0,
                     seconds: 0,
                     ms: 0
                 });
-            })
-        ];
-
-        return () => {
-            gameState.removeCallbacks(ids);
+                break;
+            case "resumed":
+                stopwatch.current.resume();
+                break;
         }
-    }, []);
 
-    //function for hiding the header when the game begins;
-    const [ headerHidden, setHeaderHidden ] = useState<boolean>(false);
-    useEffect(() => {
-        const ids = [
-            gameState.onGameState("active", () => {
-                setHeaderHidden(true);
-            }),
-            gameState.onGameState("complete", () => {
-                setHeaderHidden(false)
-            })
-        ]
-
-        return () => {
-            gameState.removeCallbacks(ids);
-        }
-    }, []);
-
-    //progress bar logic 
-    const [progress, setProgress] = useState(0); //range: 0.0 - 1.0
-    useEffect(() => {
-
-        gameData.onValueUpdated("charTyped", () => {
-            const charCount = gameData.getValue("charCount");
-            const charTyped = gameData.getValue("charTyped");
-            gameData.setValue("progress", charTyped / charCount);
-        });
-        
-        return () => {
-            gameData.clearOnUpdateFunctions("progress");
-        }
-    }, []);
-
-    const updateTimeData = () => {
-        const timeData = stopwatch.current.getElapsedTime();
-        setTimeData(timeData);
-    }
+    }, [ sessionDataContext.testState ]);
 
     const resetGame = () => {
-        console.log(gameState.getState());
-        if (gameState.isState("complete")) {
-            gameState.reset();
-        } else {
-            return;
+        if ( sessionDataContext.testState == "complete" ) {
+            sessionDataContext.resetSession();
         }
     }
-
-    const navigate = useNavigate();
+    
     const onSettingClicked = () => {
-        gameState.exit();
         navigate("/settings/general");
     }
 
@@ -113,7 +65,7 @@ function PracticePage(props) {
 
     return (
         <div className={ styles.page }>
-            <div className={`${ styles.header } ${ headerHidden && styles.header_hidden }`}>
+            <div className={`${ styles.header } ${ sessionDataContext.testState == "active" && styles.header_hidden }`}>
                 <div className={ styles.header__topBar }>
                     <button onClick={onSettingClicked} className="jpType__button">Settings</button>
                     <button onClick={onProfileClicked} className="jpType__button">Profile</button>
@@ -135,7 +87,7 @@ function PracticePage(props) {
                     <ProgressBar className={ styles.progressBar } progress={sessionDataContext.progress}></ProgressBar>
                     <Clock minutes={timeData.minutes} seconds={timeData.seconds} milli={timeData.ms}/>
                 </div>
-                <div className={`${styles.footer__buttonBar} ${!gameState.isState("complete") && styles.footer__buttonBar_hidden}`}>
+                <div className={`${styles.footer__buttonBar} ${!(sessionDataContext.testState == "complete") && styles.footer__buttonBar_hidden}`}>
                     <button className={`jpType__button`} onClick={resetGame}>Reset</button>
                 </div>
             </div>
