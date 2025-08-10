@@ -1,4 +1,4 @@
-import { SetStateAction } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import CharacterSet, { KanaRomaji } from './charSet';
 
 
@@ -7,16 +7,20 @@ type CharacterState = "active" | "inactive" | "correct" | "incorrect";
 export type Character = KanaRomaji & {
     display: string,
     id: number,
-    state: CharacterState
+    state: CharacterState,
+}
+
+type CharacterSetStateAction = {
+    id: number,
+    setState?: Dispatch<SetStateAction<Character>>
 }
 
 //A new instance should be created when a new session starts
 class TypingTest {
     currentIndex = 0;
     characterSet: Character[] = [];
-    setStateAction: React.Dispatch<SetStateAction<Character[]>>;
-    constructor( characterSet: KanaRomaji[], setStateAction: React.Dispatch<SetStateAction<Character[]>> ) {
-        this.setStateAction = setStateAction;
+    characterSetStates: CharacterSetStateAction[];
+    constructor( characterSet: KanaRomaji[]) {
         this.characterSet = characterSet.map((character, index) => {
             return {
                 en: character.en,
@@ -26,7 +30,17 @@ class TypingTest {
                 state: index == 0 ? "active" : "inactive"
             }
         });
-        this.setStateAction(this.characterSet);
+        this.characterSetStates = characterSet.map(( _, index) => {
+            return {
+                id: index,
+                setState: undefined
+            }
+        });
+    }
+
+    registerSetState = (id: number, setState: Dispatch<SetStateAction<Character>>) => {
+        const element = this.characterSetStates.find(element => element.id = id);
+        element && (element.setState = setState);
     }
 
     //This method is built as an arrow function to preserve the "this" statement

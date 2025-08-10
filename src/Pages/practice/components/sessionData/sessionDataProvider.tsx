@@ -33,11 +33,11 @@ const SessionDataProvider: React.FC<{
 
     const [ characterSetConfig ] = useLocalStorage(characterSetConfigLSContext); 
     const characterSet = useMemo(() => new CharacterSet(characterSetConfig), [ characterSetConfig ])
-    const [ characterList, setCharacterList ] = useState<Character[]>([]);
-
+    
     const [ testState, _setTestState ] = useState<TestState>("inactive");
     const [ sessionLength ] = useLocalStorage(sessionCharacterLengthLSContext);
-    const testSession = useMemo(() => new TypingTest(characterSet.shuffle(100), setCharacterList), [ characterSet ]);
+    const testSession = useMemo(() => new TypingTest(characterSet.shuffle(100)), [ characterSet ]);
+    const [ characterList, setCharacterList ] = useState<Character[]>(testSession.characterSet);
 
     const setCharacterTyped = (value: number) => {
         if ( characterCount != 0 ) {
