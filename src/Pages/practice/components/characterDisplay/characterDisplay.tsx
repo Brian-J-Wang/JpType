@@ -1,4 +1,4 @@
-import './characterDisplay.css';
+import styles from './characterDisplay.module.css';
 import React, { createContext, RefObject, useContext, useEffect, useRef, useState } from 'react';
 import Card from '../characterCard/Card';
 import { Character } from '../../classes/typingTest';
@@ -29,7 +29,7 @@ export type CardElementProps = Character & {
     row: number
 }
 
-const CharacterDisplay: React.FC = () => {
+const CharacterDisplay: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, style, ...props }) => {
     const [ cardHeight, setCardHeight ] = useState(-1);
     const currentRow = useRef<number>(0);
     const [maxRows, setMaxRows] = useState(3);
@@ -69,9 +69,14 @@ const CharacterDisplay: React.FC = () => {
         return Math.floor(cumulativeLength.current / displaySize.current);
     }
 
+    const handleFocus = () => {
+        console.log("focused");
+    }
+
     return (
         <PracticeTypeContext.Provider value={{currentRow: currentRow.current, maxRows, widthUpdateFlag, setCardHeight}}>
-            <div id="practice-type" className={`practice-type`} style={{height: cardHeight * maxRows}}ref={practiceWindow}>
+            <div id="practice-type" className={`${styles.body} ${sessionData.testState == "inactive" && styles.body__state_inactive}`} 
+            style={{height: cardHeight * maxRows}} ref={practiceWindow} {...props} tabIndex={0} onFocus={handleFocus}>
                 {
                     sessionData.characterList.map((element,index) => <Card key={index} index={index} {...element} rowCalculator={calculateRow}/>)
                 }

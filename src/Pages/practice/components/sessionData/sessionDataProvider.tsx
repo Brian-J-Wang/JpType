@@ -51,10 +51,12 @@ const SessionDataProvider: React.FC<{
         _setTestState("inactive");
     }
 
-    const startTest = () => {
-        if (testState == "inactive") {
+    const onDisplayFocus = () => {
+        document.addEventListener("keypress", testSession.parseKeyboardInput);
+    }
 
-        }
+    const onDisplayBlur = () => {
+        document.removeEventListener("keypress", testSession.parseKeyboardInput);
     }
 
     return <SessionDataContext.Provider value={{

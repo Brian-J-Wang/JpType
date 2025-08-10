@@ -2,6 +2,7 @@ import React, { useState, RefObject, forwardRef, useImperativeHandle, useContext
 import './Card.css';
 import { CardElementProps, PracticeTypeContext } from '../characterDisplay/characterDisplay';
 import { Character } from '../../classes/typingTest';
+import { SessionDataContext } from '../sessionData/sessionDataProvider';
 
 type CardProps = Character & {
     index: number,
@@ -9,6 +10,7 @@ type CardProps = Character & {
 }
 
 const Card: React.FC<CardProps> = (props) => {
+    const sessionData = useContext(SessionDataContext);
     const practiceTypeContext = useContext(PracticeTypeContext);
     const elementReference = useRef<HTMLDivElement>(null);
 
@@ -35,7 +37,11 @@ const Card: React.FC<CardProps> = (props) => {
         if (props.state == "inactive") {
             return "card__en__state_hidden";
         } else if (props.state == "active") {
-            return "card__en__state_active";
+            if (sessionData.testState == "inactive") {
+                return "card__en__state_hidden";
+            } else {
+                return "card__en__state_active";    
+            }
         } else {
             return "";
         }

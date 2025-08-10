@@ -1,4 +1,4 @@
-.practice-type {
+.body {
     margin: 30px auto;
     display: flex;
     flex-direction: block;
@@ -7,7 +7,7 @@
     overflow: hidden;
 }
 
-.practice-type__state_inactive {
-    opacity: 50%;
+.body__state_inactive {
+    opacity: 25%;
 }
 

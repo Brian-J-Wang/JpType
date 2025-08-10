@@ -10,8 +10,6 @@ export type Character = KanaRomaji & {
     state: CharacterState
 }
 
-let kbInput = "";
-
 //A new instance should be created when a new session starts
 class TypingTest {
     currentIndex = 0;
@@ -33,13 +31,12 @@ class TypingTest {
 
     //This method is built as an arrow function to preserve the "this" statement
     parseKeyboardInput = ({ key }: KeyboardEvent) => {
+        const currentCharacter = this.characterSet[this.currentIndex];
         if (key == "Backspace") {
-            if (kbInput == "") {
+            if (currentCharacter.display == "") {
                 this.updateCharacterState("inactive", n => n - 1);
             } else {
-                let char = this.characterSet[this.currentIndex];
-                kbInput = kbInput.slice(0, kbInput.length - 1);
-                char.display = kbInput;
+                currentCharacter.display = currentCharacter.display.slice(0, currentCharacter.display.length - 1) ;
             }
 
             return;
@@ -51,17 +48,15 @@ class TypingTest {
         }
 
         //kbInput is necessary for characters that are longer than one letter;
-        kbInput += key;
-        const character = this.characterSet[this.currentIndex];
-        character.display = kbInput;
+        currentCharacter.display += key;
 
-        if (kbInput.length < character.en.length) {
+        if (currentCharacter.display.length < currentCharacter.en.length) {
             return;
         }
 
         //checks for correctness only when the kbInput is the same length as character length in engish;
-        if (kbInput.length >= character.en.length) {
-            if (kbInput == character.en) {
+        if (currentCharacter.display.length >= currentCharacter.en.length) {
+            if (currentCharacter.display == currentCharacter.en) {
                 this.updateCharacterState("correct", n => n + 1);
             } else {
                 this.updateCharacterState("incorrect", n => n + 1);
@@ -84,7 +79,6 @@ class TypingTest {
 
         char = this.characterSet[this.currentIndex];
         char.state = "active";
-        kbInput = "";
     }
 }
 

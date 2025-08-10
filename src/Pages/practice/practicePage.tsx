@@ -1,12 +1,14 @@
 import '../../assets/JPType.css'
-import { useState, useRef, useEffect, useContext } from 'react'
+import { useState, useRef, useEffect, useContext, lazy, Suspense } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Stopwatch from '../../JS/stopwatch.js'
 import Clock from '../../Components/Clock/Clock'
-import { ProgressBar, SessionDataContext, StatPanel, CharacterDisplay } from './components'
+import { ProgressBar, SessionDataContext, StatPanel } from './components'
 import settingIcon from '../../assets/setting.svg'
 
 import styles from "./practice.module.css"
+
+const CharacterDisplay = lazy(() => import("./components/characterDisplay/characterDisplay"));
 
 const PracticePage: React.FC = () => {
     const navigate = useNavigate();
@@ -81,7 +83,9 @@ const PracticePage: React.FC = () => {
                     <button className="jpType__square-button">Custom</button>
                 </div>
             </div>
-            <CharacterDisplay/>
+            <Suspense fallback={<div>loading</div>}>
+                <CharacterDisplay/>
+            </Suspense>
             <div className={ styles.footer }>
                 <div className={ styles.footer__stats }>
                     <ProgressBar className={ styles.progressBar } progress={sessionDataContext.progress}></ProgressBar>
