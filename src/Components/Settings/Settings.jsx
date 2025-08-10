@@ -4,7 +4,6 @@ import { useState, useContext, useEffect } from 'react';
 import SettingTabs from './settingTabs.jsx';
 import settingContext from './settingsContext.js';
 import SettingGroup from './settingGroup.jsx';
-import gameState from '../../JS/gameState.js';
 
 
 function Settings(props) {
@@ -12,7 +11,6 @@ function Settings(props) {
 
     const navigate = useNavigate();
     const handleBackClick = () => {
-        gameState.return();
         navigate("/");
     }
 

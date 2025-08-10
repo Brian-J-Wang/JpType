@@ -1,5 +1,4 @@
 import { createBrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import gameState from "../../JS/gameState"
 import styles from "./settings.module.css"
 import { NavLink } from "react-router-dom";
 import GeneralSettingsPage from "./subPages/generalSettingsPage";
@@ -10,7 +9,6 @@ const settingsPage: React.FC = (props) => {
     const navigate = useNavigate();
     
     const handleBackClick = () => {
-        gameState.return();
         navigate("/");
     }
 

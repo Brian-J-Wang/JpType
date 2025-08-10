@@ -4,6 +4,7 @@
     flex-direction: block;
     flex-wrap: wrap;
     flex-shrink: 2;
+    overflow: hidden;
 }
 
 .practice-type__state_inactive {

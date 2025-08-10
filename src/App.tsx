@@ -1,11 +1,12 @@
 import './assets/Fonts/fonts.css'
 import './App.css'
-import './assets/normalize.css'
-import Header from './Components/Header/Header'
-import PracticePage from './Pages/practice/practicePage'
+import './assets/normalize.css';
+
+import PracticePage from './Pages/practice/'
 import SettingsPage from './Pages/settings/settingsPage'
 import { createBrowserRouter, RouterProvider, Link, Outlet } from 'react-router-dom'
-import Profile from './Pages/profile/Profile'
+import Profile from './Pages/profile/profile'
+import Header from './Components/Header/Header';
 
 function App() {
 

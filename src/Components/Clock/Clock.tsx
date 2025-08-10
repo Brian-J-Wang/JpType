@@ -1,8 +1,12 @@
-import UseLocalStorage from "../../Hooks/UseLocalStorage";
 import "./Clock.css"
 
-function Clock(props) {
-    const [ showTimer ] = UseLocalStorage("showTimer");
+type ClockType = {
+    milli: number,
+    seconds: number,
+    minutes: number
+}
+
+const Clock: React.FC<ClockType> = (props) => {
 
     const formatSeconds = () => {
         if (props.seconds < 10) {
@@ -23,7 +27,7 @@ function Clock(props) {
     }
 
     return (
-        <div className="clock" hidden={!showTimer}>
+        <div className="clock">
             <p className="clock__time">
                 {props.minutes}:{formatSeconds()}<span className="clock__ms">{formatMilli()}</span>
             </p>

@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Stopwatch from '../../JS/stopwatch.js'
 import Clock from '../../Components/Clock/Clock'
-import { ProgressBar, SessionDataContext, StatPanel, PracticeType } from './components'
+import { ProgressBar, SessionDataContext, StatPanel, CharacterDisplay } from './components'
 import settingIcon from '../../assets/setting.svg'
 
 import styles from "./practice.module.css"
@@ -81,7 +81,7 @@ const PracticePage: React.FC = () => {
                     <button className="jpType__square-button">Custom</button>
                 </div>
             </div>
-            <PracticeType/>
+            <CharacterDisplay/>
             <div className={ styles.footer }>
                 <div className={ styles.footer__stats }>
                     <ProgressBar className={ styles.progressBar } progress={sessionDataContext.progress}></ProgressBar>

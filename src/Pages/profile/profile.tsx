@@ -1,12 +1,10 @@
-import './Profile.css'
-import { useNavigate } from 'react-router-dom'
-import gameState from '../../JS/gameState.js';
+import './profile.css';
+import { useNavigate } from 'react-router-dom';
 
 function Profile() {
 
     const navigate = useNavigate();
     const handleBackClick = () => {
-        gameState.return();
         navigate("/");
     }
 

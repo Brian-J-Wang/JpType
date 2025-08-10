@@ -1,4 +1,4 @@
-.progress-bar {
+.body {
     flex-grow: 2;
     background-color: #272727;
     outline: 1px solid black;
@@ -8,7 +8,7 @@
     margin-right: 15px;
 }
 
-.progress-bar__meter {
+.meter {
     min-width: 10px;
     height: 10px;
     border-radius: 5px;

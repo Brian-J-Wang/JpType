@@ -1,5 +1,5 @@
 import { createContext, PropsWithChildren, ReactNode, useCallback, useContext, useState } from "react";
-import UseLocalStorage from "../../../../Hooks/UseLocalStorage"
+import { useLocalStorage, localStorageType } from "../../../../Hooks/UseLocalStorage"
 import Toggle from "../../../../shared/inputs/toggle/toggle";
 import styles from "./settingInput.module.css";
 import NumberInput from "../../../../shared/inputs/numberInput/numberInput";
@@ -10,15 +10,14 @@ type SettingInputContextType = {
 const SettingInputContext = createContext<SettingInputContextType | undefined>(undefined);
 
 type SettingInputType<T> = {
-    localStorageName: string,
-    localStorageDefaultValue: T,
+    localStorageContext: localStorageType<T>
     name: string,
     type: "switch" | "text" | "number" | "slider",
     children: ReactNode
 }
 
 function SettingInput<T>(props: SettingInputType<T>) {
-    const [ input, setInput ] = UseLocalStorage<T>(props.localStorageName, props.localStorageDefaultValue);
+    const [ input, setInput ] = useLocalStorage<T>(props.localStorageContext);
     const [ desc, setDesc] = useState<ReactNode | undefined>(undefined);
 
     const getControl = () => {

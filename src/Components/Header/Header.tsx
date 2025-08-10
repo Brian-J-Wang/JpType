@@ -1,6 +1,6 @@
 import './Header.css'
 
-function Header(props) {
+const Header: React.FC = () => {
     return (
         <div className="header">
             <div className="header__content">
