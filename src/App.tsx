@@ -7,6 +7,7 @@ import SettingsPage from './Pages/settings/settingsPage'
 import { createBrowserRouter, RouterProvider, Link, Outlet } from 'react-router-dom'
 import Profile from './Pages/profile/profile'
 import Header from './Components/Header/Header';
+import { generateRandomHexColor } from './utilities/generateRandomHexColor';
 
 function App() {
 

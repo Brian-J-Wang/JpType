@@ -4,7 +4,7 @@ type elapsedTime = {
     ms: number
 }
 //time that passed in ms
-export default class Stopwatch {
+export default class Clock {
     private _elapsedTime: number;
     private _hasStarted: boolean;
     private _state: "standby" | "running" | "paused" | "complete";

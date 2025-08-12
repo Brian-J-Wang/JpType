@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { generateUniqueHash } from "../Utilities/GenerateUniqueHash";
+import { generateUniqueHash } from "../utilities/GenerateUniqueHash";
 
 const eventListeners = new Map<string, {
     id: string,

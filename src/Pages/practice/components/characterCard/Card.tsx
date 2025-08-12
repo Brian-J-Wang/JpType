@@ -1,18 +1,25 @@
 import React, { useState, RefObject, forwardRef, useImperativeHandle, useContext, useRef, useEffect } from 'react';
-import './Card.css';
-import { CardElementProps, PracticeTypeContext } from '../characterDisplay/characterDisplay';
+import { CardElementProps, CharacterDisplayContext } from '../characterDisplay/characterDisplay';
 import { Character } from '../../classes/typingTest';
 import { SessionDataContext } from '../sessionData/sessionDataProvider';
 
-type CardProps = Character & {
+import styles from './Card.module.css';
+import { generateRandomHexColor } from '../../../../utilities/generateRandomHexColor';
+
+type CardProps = {
     index: number,
+    character: Character,
     rowCalculator: (len: number) => number
 }
 
 const Card: React.FC<CardProps> = (props) => {
     const sessionData = useContext(SessionDataContext);
-    const practiceTypeContext = useContext(PracticeTypeContext);
+    const displayContext = useContext(CharacterDisplayContext);
     const elementReference = useRef<HTMLDivElement>(null);
+    const [character, setCharacter] = useState<Character>(props.character);
+    useEffect(() => {
+        sessionData.testSession.registerSetState(character.id, setCharacter);
+    }, [])
 
     const [ row, setRow ] = useState(-1);
     useEffect(() => {
@@ -21,60 +28,61 @@ const Card: React.FC<CardProps> = (props) => {
             
             if (props.index == 0) {
                 const style = window.getComputedStyle(elementReference.current);
-                console.log(parseInt(style.marginTop) + rect.height + parseInt(style.marginBottom));
-                practiceTypeContext.setCardHeight(parseInt(style.marginTop) + rect.height + parseInt(style.marginBottom));
+                displayContext.setCardHeight(parseInt(style.marginTop) + rect.height + parseInt(style.marginBottom));
             }
 
             if (rect) {
                 setRow(props.rowCalculator(rect.width));
             }
         }
+    }, [ displayContext.widthUpdateFlag ]);
 
-        
-    }, [ practiceTypeContext.widthUpdateFlag ]);
-
-    const enState = () => {
-        if (props.state == "inactive") {
-            return "card__en__state_hidden";
-        } else if (props.state == "active") {
-            if (sessionData.testState == "inactive") {
-                return "card__en__state_hidden";
-            } else {
-                return "card__en__state_active";    
-            }
-        } else {
-            return "";
-        }
+    if (character.state == "active" || character.state == "correcting") {
+        displayContext.setActiveRow(row);
     }
 
     const isHidden = () => {
         if (row == -1) {
-            return true;
+            return styles.hidden;
         }
 
-        if (practiceTypeContext.currentRow == 0 && row <= practiceTypeContext.maxRows) {
-            if (row <= practiceTypeContext.maxRows - 1) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        const lowerBounds = Math.floor((practiceTypeContext.maxRows - 1) / 2) + practiceTypeContext.currentRow;
-        const upperBounds = Math.ceil((practiceTypeContext.maxRows - 1) / 2) + practiceTypeContext.currentRow;
-        if ( row >= lowerBounds && row <= upperBounds) {
-            return false;
+        const { bounds } = displayContext;
+        if ( row <= bounds.upper && row >= bounds.lower) {
+            return "";
         } else {
-            return true;
+            return styles.hidden;
         }
     }
 
+    let stateStyle = "";
+    switch(character.state) {
+        case "active":
+            stateStyle = styles.state_active;
+            break;
+        case "correct":
+            stateStyle = styles.state_correct;
+            break;
+        case "correcting":
+            stateStyle = styles.state_correcting;
+            break;
+        case "inactive":
+            stateStyle = styles.state_inactive;
+            break;
+        case "incorrect":
+            stateStyle = styles.state_incorrect;
+            break;
+        case "corrected":
+            stateStyle = styles.state_corrected;
+            break;
+    }
+    
     return (
-        <div className={`card card__state_${props.state} ${ isHidden() && `card__hidden`}`} ref={elementReference}>
-            <h2 className={`card__jpn`}>{props.jp}</h2>
-            <p className={`card__en ${enState()}`}>{(props.state == "active")? props.display : props.en}</p>
+        <div className={`${styles.base} ${stateStyle} ${isHidden()}`}  ref={elementReference}>
+            <h2 className={styles.jp}>{character.jp}</h2>
+            <p className={styles.en}>{character.display}</p>
         </div>
     )
 }
+
 
 export default Card;

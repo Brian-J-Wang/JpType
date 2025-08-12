@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useMemo, useRef, useState } from "react"
+import { createContext, Dispatch, ReactNode, SetStateAction, useMemo, useRef, useState } from "react"
 import TypingTest, { Character } from "../../classes/typingTest";
 import { useLocalStorage } from "../../../../Hooks/UseLocalStorage";
 import { characterSetConfigLSContext, sessionCharacterLengthLSContext } from "../../../../Contexts/useLocalStorageContexts";
@@ -15,13 +15,16 @@ type SessionDataType = {
     setCharacterTyped: ( value: number ) => void,
     testState: TestState,
     resetSession: () => void,
-    characterList: Character[];
+    characterList: Character[],
+    testSession: TypingTest,
+    display: {
+        onfocus: () => void,
+        onBlur: () => void
+    }
 }
 
 //@ts-ignore
 export const SessionDataContext = createContext<SessionDataType>();
-
-
 
 const SessionDataProvider: React.FC<{
     children: ReactNode
@@ -32,12 +35,12 @@ const SessionDataProvider: React.FC<{
     const [ characterTyped, _setCharacterTyped ] = useState<number>(0);
 
     const [ characterSetConfig ] = useLocalStorage(characterSetConfigLSContext); 
-    const characterSet = useMemo(() => new CharacterSet(characterSetConfig), [ characterSetConfig ])
+    const [ sessionLength ] = useLocalStorage(sessionCharacterLengthLSContext);
+    const characterSet = useMemo(() => new CharacterSet(characterSetConfig) , [ characterSetConfig ])
+    const testSession = useMemo(() => new TypingTest(characterSet.shuffle(100)), [ characterSet ]);
+    const [ characterList, setCharacterList ] = useState<Character[]>(testSession.getCharacters());
     
     const [ testState, _setTestState ] = useState<TestState>("inactive");
-    const [ sessionLength ] = useLocalStorage(sessionCharacterLengthLSContext);
-    const testSession = useMemo(() => new TypingTest(characterSet.shuffle(100)), [ characterSet ]);
-    const [ characterList, setCharacterList ] = useState<Character[]>(testSession.characterSet);
 
     const setCharacterTyped = (value: number) => {
         if ( characterCount != 0 ) {
@@ -52,11 +55,19 @@ const SessionDataProvider: React.FC<{
     }
 
     const onDisplayFocus = () => {
-        document.addEventListener("keypress", testSession.parseKeyboardInput);
+        document.addEventListener("keydown", testSession.parseKeyboardInput);
+        document.addEventListener("keydown", startTest);
+    }
+
+    const startTest = () => {
+        _setTestState("active");
+
+        document.removeEventListener("keydown", startTest);
     }
 
     const onDisplayBlur = () => {
-        document.removeEventListener("keypress", testSession.parseKeyboardInput);
+        _setTestState("paused");
+        document.removeEventListener("keydown", testSession.parseKeyboardInput);
     }
 
     return <SessionDataContext.Provider value={{
@@ -65,7 +76,12 @@ const SessionDataProvider: React.FC<{
         setCharacterTyped,
         testState,
         resetSession,
-        characterList
+        characterList,
+        testSession,
+        display: {
+            onfocus: onDisplayFocus,
+            onBlur: onDisplayBlur
+        }
     }}>
         {props.children}
     </SessionDataContext.Provider>
