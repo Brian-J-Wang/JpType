@@ -50,6 +50,30 @@ const createLocalStorage = <T>(key: string, initialValue: T): localStorageType<T
         localStorage.setItem(key, JSON.stringify(initialValue));
     }
 
+    const localValue = JSON.parse(localStorage.getItem(key) ?? "");
+
+    //removes properties not in initial value and adds properties not found in initialValue
+    if (typeof localValue === "object") {
+        console.log(initialValue);
+        
+        Object.keys(initialValue as Object).forEach((key) => {
+            console.log(key);
+            if (!localValue[key]) {
+                console.log(localValue[key]);
+                localValue[key] = (initialValue as Record<string, any>)[key];
+                console.log(localValue[key]);
+            }
+        })
+
+        Object.keys(localValue).forEach((key) => {
+            if (!Object.keys(initialValue as Record<string, unknown>).includes(key)) {
+                console.log(key);
+                delete localValue[key];
+            }
+        })
+        localStorage.setItem(key, JSON.stringify(localValue));
+    }
+
     return {
         key: key,
         initialValue: initialValue

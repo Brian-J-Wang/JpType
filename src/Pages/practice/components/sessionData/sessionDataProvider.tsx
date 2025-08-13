@@ -1,8 +1,11 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useMemo, useRef, useState } from "react"
+import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
 import TypingTest, { Character } from "../../classes/typingTest";
 import { useLocalStorage } from "../../../../Hooks/UseLocalStorage";
 import { characterSetConfigLSContext, sessionCharacterLengthLSContext } from "../../../../Contexts/useLocalStorageContexts";
-import CharacterSet from "../../classes/charSet";
+import CharacterSet from "../../classes/generateCharacterList";
+import StateProxyArray from "../../classes/stateProxy";
+import generateCharacterList from "../../classes/generateCharacterList";
+import { generateUniqueHash } from "../../../../utilities/GenerateUniqueHash";
 
 
 type TestState = "inactive" | "active" | "paused" | "resumed" | "complete" | "reset" | "blur" | "return";
@@ -15,7 +18,7 @@ type SessionDataType = {
     setCharacterTyped: ( value: number ) => void,
     testState: TestState,
     resetSession: () => void,
-    characterList: Character[],
+    characters: StateProxyArray<Character>,
     testSession: TypingTest,
     display: {
         onfocus: () => void,
@@ -34,11 +37,23 @@ const SessionDataProvider: React.FC<{
     const [ characterCount ] = useState<number>(0);
     const [ characterTyped, _setCharacterTyped ] = useState<number>(0);
 
-    const [ characterSetConfig ] = useLocalStorage(characterSetConfigLSContext); 
-    const [ sessionLength ] = useLocalStorage(sessionCharacterLengthLSContext);
-    const characterSet = useMemo(() => new CharacterSet(characterSetConfig) , [ characterSetConfig ])
-    const testSession = useMemo(() => new TypingTest(characterSet.shuffle(100)), [ characterSet ]);
-    const [ characterList, setCharacterList ] = useState<Character[]>(testSession.getCharacters());
+    const [ characterSetConfig ] = useLocalStorage(characterSetConfigLSContext);
+
+    const buildCharacterList = () => {
+        const characterList = generateCharacterList(characterSetConfig).map((element, index) => {
+            return {
+                en: element.en,
+                jp: element.jp,
+                display: "",
+                id: generateUniqueHash(),
+                state: index == 0 ? "active" : "inactive"
+            } as Character
+        });
+        return new StateProxyArray<Character>(characterList);
+    }
+    const [ characters, setCharacters ] = useState<StateProxyArray<Character>>(buildCharacterList());
+    
+    const testSession = useMemo(() => new TypingTest(characters), []);
     
     const [ testState, _setTestState ] = useState<TestState>("inactive");
 
@@ -76,7 +91,7 @@ const SessionDataProvider: React.FC<{
         setCharacterTyped,
         testState,
         resetSession,
-        characterList,
+        characters,
         testSession,
         display: {
             onfocus: onDisplayFocus,

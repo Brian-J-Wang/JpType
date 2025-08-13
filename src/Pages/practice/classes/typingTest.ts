@@ -1,5 +1,5 @@
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import CharacterSet, { KanaRomaji } from './charSet';
+import CharacterSet, { KanaRomaji } from './generateCharacterList';
 import ArrayCursor from './cursor';
 import { generateUniqueHash } from '../../../utilities/GenerateUniqueHash';
 
@@ -11,33 +11,17 @@ export type Character = KanaRomaji & {
     state: CharacterState,
 }
 
+//keys refer to the keyboard keys, character refer to the japanese characters 
+type SessionStatistics = {
+    totalKeys: number;
+    keysTyped: number;
+}
+
 //A new instance should be created when a new session starts
 class TypingTest {
-    private setStates: Map<string, Dispatch<SetStateAction<Character>>> = new Map();
     cursor: ArrayCursor<Character>;
-    constructor( characterSet: KanaRomaji[]) {
-        this.cursor = new ArrayCursor(characterSet.map((character, index) => {
-            const uid = generateUniqueHash();
-
-            return new Proxy<Character>({
-                en: character.en,
-                jp: character.jp,
-                display: "",
-                id: uid,
-                state: index == 0 ? "active" : "inactive",    
-            }, {
-                set: (target, prop, value) => {
-                    target[prop as keyof Character] = value;
-                    
-                    const setState = this.setStates.get(target.id);
-                    if (setState) {
-                        setState({ ...target });
-                    }
-
-                    return true;
-                }
-            });
-        }));
+    constructor( characters: Character[]) {
+        this.cursor = new ArrayCursor(characters);
 
         this.cursor.onEndReached = () => {
             console.log("ended");
@@ -53,10 +37,6 @@ class TypingTest {
             element.state = "active";
             return element;
         });
-    }
-
-    registerSetState = (id: string, setState: Dispatch<SetStateAction<Character>>) => {
-        this.setStates.set(id, setState)
     }
 
     //This method is built as an arrow function to preserve the "this" statement

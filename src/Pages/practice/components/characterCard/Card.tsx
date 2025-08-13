@@ -1,4 +1,4 @@
-import React, { useState, RefObject, forwardRef, useImperativeHandle, useContext, useRef, useEffect } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import { CardElementProps, CharacterDisplayContext } from '../characterDisplay/characterDisplay';
 import { Character } from '../../classes/typingTest';
 import { SessionDataContext } from '../sessionData/sessionDataProvider';
@@ -7,52 +7,21 @@ import styles from './Card.module.css';
 import { generateRandomHexColor } from '../../../../utilities/generateRandomHexColor';
 
 type CardProps = {
-    index: number,
-    character: Character,
-    rowCalculator: (len: number) => number
+    id: string,
+    initialData: Character,
+    hidden: boolean
 }
 
+
+/** responsible for rendering the contents of the character */
 const Card: React.FC<CardProps> = (props) => {
     const sessionData = useContext(SessionDataContext);
-    const displayContext = useContext(CharacterDisplayContext);
     const elementReference = useRef<HTMLDivElement>(null);
-    const [character, setCharacter] = useState<Character>(props.character);
+    const [ character, setCharacter ] = useState<Character>(props.initialData);
+
     useEffect(() => {
-        sessionData.testSession.registerSetState(character.id, setCharacter);
+        setCharacter(sessionData.characters.register(props.id, setCharacter) as Character)
     }, [])
-
-    const [ row, setRow ] = useState(-1);
-    useEffect(() => {
-        if (elementReference.current) {
-            const rect = elementReference.current.getBoundingClientRect();
-            
-            if (props.index == 0) {
-                const style = window.getComputedStyle(elementReference.current);
-                displayContext.setCardHeight(parseInt(style.marginTop) + rect.height + parseInt(style.marginBottom));
-            }
-
-            if (rect) {
-                setRow(props.rowCalculator(rect.width));
-            }
-        }
-    }, [ displayContext.widthUpdateFlag ]);
-
-    if (character.state == "active" || character.state == "correcting") {
-        displayContext.setActiveRow(row);
-    }
-
-    const isHidden = () => {
-        if (row == -1) {
-            return styles.hidden;
-        }
-
-        const { bounds } = displayContext;
-        if ( row <= bounds.upper && row >= bounds.lower) {
-            return "";
-        } else {
-            return styles.hidden;
-        }
-    }
 
     let stateStyle = "";
     switch(character.state) {
@@ -77,7 +46,7 @@ const Card: React.FC<CardProps> = (props) => {
     }
     
     return (
-        <div className={`${styles.base} ${stateStyle} ${isHidden()}`}  ref={elementReference}>
+        <div className={`${styles.base} ${stateStyle} ${props.hidden && styles.hidden}`} ref={elementReference} id={props.id}>
             <h2 className={styles.jp}>{character.jp}</h2>
             <p className={styles.en}>{character.display}</p>
         </div>
