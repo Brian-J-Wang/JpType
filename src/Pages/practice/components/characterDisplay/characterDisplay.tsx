@@ -104,7 +104,6 @@ const CharacterDisplay: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ clas
         const newCards = new Map(cards);
     
         [...newCards.entries()].forEach(([key, value]) => {
-            console.log(maxRow);
             value.hidden = value.row > displayBounds.upper || value.row < displayBounds.lower;
         });
 

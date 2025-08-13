@@ -19,9 +19,16 @@ type SessionStatistics = {
 
 //A new instance should be created when a new session starts
 class TypingTest {
+    sessionStatistics: SessionStatistics;
     cursor: ArrayCursor<Character>;
     constructor( characters: Character[]) {
         this.cursor = new ArrayCursor(characters);
+        this.sessionStatistics = {
+            totalKeys: characters.reduce<number>((prev, current) => {
+                return prev + current.en.length
+            }, 0),
+            keysTyped: 0
+        }
 
         this.cursor.onEndReached = () => {
             console.log("ended");

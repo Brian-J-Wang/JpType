@@ -59,15 +59,12 @@ const createLocalStorage = <T>(key: string, initialValue: T): localStorageType<T
         Object.keys(initialValue as Object).forEach((key) => {
             console.log(key);
             if (!localValue[key]) {
-                console.log(localValue[key]);
                 localValue[key] = (initialValue as Record<string, any>)[key];
-                console.log(localValue[key]);
             }
         })
 
         Object.keys(localValue).forEach((key) => {
             if (!Object.keys(initialValue as Record<string, unknown>).includes(key)) {
-                console.log(key);
                 delete localValue[key];
             }
         })
