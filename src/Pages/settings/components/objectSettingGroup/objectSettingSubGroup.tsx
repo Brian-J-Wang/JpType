@@ -1,7 +1,7 @@
 import { PropsWithChildren, useContext, useState } from "react";
 import { ObjectPropertyContext } from "./contexts";
 
-type ObjectSettingSubGroupType = PropsWithChildren & {
+export type ObjectSettingSubGroupType = PropsWithChildren & {
     property: string
 }
 
@@ -37,3 +37,5 @@ const ObjectSettingSubGroup: React.FC<ObjectSettingSubGroupType> = (props) => {
         return (<></>)
     }
 }
+
+export default ObjectSettingSubGroup;

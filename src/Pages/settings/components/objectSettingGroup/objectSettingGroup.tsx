@@ -2,12 +2,11 @@ import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext,
 import { localStorageType, useLocalStorage } from "../../../../Hooks/UseLocalStorage"
 import { ObjectPropertyContext } from "./contexts"
 
- 
-type ObjectSettingGroupType = PropsWithChildren & {
+export type ObjectSettingGroupType = PropsWithChildren & {
     localStorageContext: localStorageType<Record<string, any>>
 }
 
-const LocalStorageObjectSetting: React.FC<ObjectSettingGroupType> = (props) => {
+const ObjectSettingGroup: React.FC<ObjectSettingGroupType> = (props) => {
     const [ obj, setObj ] = useLocalStorage(props.localStorageContext);    
 
     const getProperty = (key: string) => {
@@ -39,4 +38,4 @@ const LocalStorageObjectSetting: React.FC<ObjectSettingGroupType> = (props) => {
     } 
 }
 
-
+export default ObjectSettingGroup;

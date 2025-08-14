@@ -1,8 +1,7 @@
 import { PropsWithChildren, useState } from "react"
 import { ControlsAlignment, ObjectSettingPropertyContext } from "./contexts";
 
-
-type ObjectSettingPropertyType = PropsWithChildren & {
+export type ObjectSettingPropertyType = PropsWithChildren & {
     settingName: string,
     property: string
 }
@@ -25,3 +24,5 @@ const ObjectSettingProperty: React.FC<ObjectSettingPropertyType> = (props) => {
         </ObjectSettingPropertyContext.Provider>
     )
 }
+
+export default ObjectSettingProperty;
