@@ -3,6 +3,8 @@ import { CharacterSetConfig } from "../Pages/practice/classes/generateCharacterL
 
 export const showProgressBarLSContext = createLocalStorage("showProgressBar", false);
 
+export const showTimerLSContext = createLocalStorage("showTimer", true);
+
 export const characterSetConfigLSContext = createLocalStorage<CharacterSetConfig>("characterSetConfig", {
     higigana: {
         allowed: true,

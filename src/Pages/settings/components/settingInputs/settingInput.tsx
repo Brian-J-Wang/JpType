@@ -1,10 +1,12 @@
-import { createContext, PropsWithChildren, ReactNode, useCallback, useContext, useState } from "react";
+import { createContext, PropsWithChildren, ReactNode, SetStateAction, useCallback, useContext, useState } from "react";
 import { useLocalStorage, localStorageType } from "../../../../Hooks/UseLocalStorage"
 import Toggle from "../../../../shared/inputs/toggle/toggle";
 import styles from "./settingInput.module.css";
 import NumberInput from "../../../../shared/inputs/numberInput/numberInput";
 
 type SettingInputContextType = {
+    input: any,
+    setInput: React.Dispatch<SetStateAction<any>>
     setDesc: React.Dispatch<React.SetStateAction<ReactNode | undefined>>   
 }
 const SettingInputContext = createContext<SettingInputContextType | undefined>(undefined);
@@ -46,7 +48,7 @@ function SettingInput<T>(props: SettingInputType<T>) {
     }
 
     return (
-        <SettingInputContext.Provider value={{setDesc}}>
+        <SettingInputContext.Provider value={{input, setInput, setDesc}}>
             { props.children }
             <div className={styles.body}>
                 <div className={styles.leftSide}>
