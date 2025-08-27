@@ -1,5 +1,4 @@
-import { showProgressBarLSContext } from '../../../../Contexts/useLocalStorageContexts';
-import { useLocalStorage } from '../../../../Hooks/UseLocalStorage'
+
 import styles from "./progressBar.module.css";
 
 
@@ -10,10 +9,9 @@ type ProgressBarType = {
 }
 
 const ProgressBar: React.FC<ProgressBarType> = (props) => {
-    const [ showProgressBar ] = useLocalStorage(showProgressBarLSContext);
 
     return (
-        <div className={`${props.className} ${styles.body}`} hidden={!showProgressBar}>
+        <div className={`${props.className} ${styles.body}`} hidden={false}>
             <div className={`${styles.meter}`} style={{width: `${props.progress * 100}%`}}></div>
         </div>
     )   

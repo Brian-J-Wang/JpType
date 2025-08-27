@@ -1,7 +1,7 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
 import { CardElementProps, CharacterDisplayContext } from '../characterDisplay/characterDisplay';
 import { Character } from '../../classes/typingTest';
-import { SessionDataContext } from '../sessionData/sessionDataProvider';
+import { SessionDataContext } from '../sessionDataProvider/sessionDataProvider';
 
 import styles from './Card.module.css';
 import { generateRandomHexColor } from '../../../../utilities/generateRandomHexColor';

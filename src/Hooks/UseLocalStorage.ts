@@ -112,7 +112,7 @@ function useLocalStorage<T>(context: localStorageType<T>) {
     }
 
     function _setState(value: T) {
-        localStorage.setItem(context.key, value as string);
+        localStorage.setItem(context.key, JSON.stringify(value as string));
         setState(value);
         updateKey(context.key, value);
     }

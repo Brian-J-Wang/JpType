@@ -2,7 +2,7 @@ import styles from './characterDisplay.module.css';
 import React, { createContext, Dispatch, RefObject, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Card from '../characterCard/Card';
 import { Character } from '../../classes/typingTest';
-import { SessionDataContext } from '../sessionData/sessionDataProvider';
+import { SessionDataContext } from '../sessionDataProvider/sessionDataProvider';
 
 type RowDisplayBounds = {
     upper: number,

@@ -1,0 +1,1 @@
+export type WithSubComponents<T, Sub extends Record<string, React.FC<any>>> = T & Sub;

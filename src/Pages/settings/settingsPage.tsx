@@ -1,9 +1,9 @@
-import { createBrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import styles from "./settings.module.css"
 import { NavLink } from "react-router-dom";
 import GeneralSettingsPage from "./subPages/generalSettingsPage";
 import { useEffect } from "react";
-import TestSettingPage from "./subPages/testSettingsPage";
+import TestSettingPage from "./subPages/testSettings/testSettingsPage";
 
 const settingsPage: React.FC = (props) => {
     const navigate = useNavigate();
@@ -14,9 +14,9 @@ const settingsPage: React.FC = (props) => {
 
     useEffect(() => {
         if (window.location.pathname === "/settings") {
-            navigate("general");
+            navigate("test-settings");
         }
-    }, [])
+    }, []);
 
     return (
         <div className={styles.page}>
@@ -33,13 +33,13 @@ const settingsPage: React.FC = (props) => {
             </div>
             <div className={styles.body}>
                 <nav className={styles.left_panel}>
-                    <NavLink to="general" className={styles.navlink}>General</NavLink>
                     <NavLink to="test-settings" className={styles.navlink}>Test Settings</NavLink>
+                    <NavLink to="general" className={styles.navlink}>General</NavLink>
                 </nav>
                 <div className={styles.right_panel}>
                     <Routes>
-                        <Route path="general" element={<GeneralSettingsPage/>}/>
                         <Route path="test-settings" element={<TestSettingPage/>}/>
+                        <Route path="general" element={<GeneralSettingsPage/>}/>
                         <Route path="*" element={<div> How'd you get here? </div>}/>
                     </Routes>
                 </div>

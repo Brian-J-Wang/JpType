@@ -1,4 +1,4 @@
-import { SessionDataContext } from "../sessionData/sessionDataProvider"
+import { SessionDataContext } from "../sessionDataProvider/sessionDataProvider"
 import { useContext, useEffect, useRef, useState } from "react"
 import Clock from "./clock"
 

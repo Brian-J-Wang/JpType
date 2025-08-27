@@ -1,8 +1,7 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from "react"
+import { createContext, ReactNode, useMemo, useState } from "react"
 import TypingTest, { Character } from "../../classes/typingTest";
-import { useLocalStorage } from "../../../../Hooks/UseLocalStorage";
-import { characterSetConfigLSContext, sessionCharacterLengthLSContext } from "../../../../Contexts/useLocalStorageContexts";
-import CharacterSet from "../../classes/generateCharacterList";
+import { useLocalStorage } from "../../../../Hooks/useLocalStorage";
+import TestSettingConfig from "../../../settings/subPages/testSettings/testSettingLocalStorageContext";
 import StateProxyArray from "../../classes/stateProxy";
 import generateCharacterList from "../../classes/generateCharacterList";
 import { generateUniqueHash } from "../../../../utilities/GenerateUniqueHash";
@@ -37,10 +36,10 @@ const SessionDataProvider: React.FC<{
     const [ characterCount ] = useState<number>(0);
     const [ characterTyped, _setCharacterTyped ] = useState<number>(0);
 
-    const [ characterSetConfig ] = useLocalStorage(characterSetConfigLSContext);
+    const [ testSettingConfig ] = useLocalStorage(TestSettingConfig);
 
     const buildCharacterList = () => {
-        const characterList = generateCharacterList(characterSetConfig).map((element, index) => {
+        const characterList = generateCharacterList(testSettingConfig ).map((element, index) => {
             return {
                 en: element.en,
                 jp: element.jp,
