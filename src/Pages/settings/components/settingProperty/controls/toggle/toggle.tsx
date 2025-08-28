@@ -8,7 +8,7 @@ type ToggleType = {
 
 const Toggle: React.FC<ToggleType> = (props) => {
     const settingContext = useContext(SettingContext);
-    const [ state, setState ] = useState(settingContext.getProperty(props.identifier));
+    const [ state, setState ] = useState<boolean>(settingContext.getProperty(props.identifier));
     if (typeof state != "boolean") {
         console.error("property is not a boolean for toggle control");
         return (<></>);

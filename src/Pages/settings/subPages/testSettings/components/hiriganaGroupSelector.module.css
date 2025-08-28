@@ -1,0 +1,5 @@
+.body {
+    display: flex;
+    gap: 4px;
+    padding: 8px;
+}

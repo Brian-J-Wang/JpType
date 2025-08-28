@@ -1,5 +1,7 @@
 import { PropsWithChildren } from "react"
 
+import styles from "./settingProperty.module.css";
+
 type PropertyType = PropsWithChildren & {
     alignment?: "row" | "column",
     name: string,
@@ -7,11 +9,14 @@ type PropertyType = PropsWithChildren & {
 }
 
 const SettingProperty: React.FC<PropertyType> = ({ alignment = "row", ...props}) => {
+
+    const alignmentStyle = alignment == "row" ? styles.alignmentRow : styles.alignmnetColumn;
+
     return (
-        <div className="">
+        <div className={`${styles.body} ${alignmentStyle}`}>
             <div>
-                <h3>{props.name}</h3>
-                <small>{props.description}</small>
+                <h3 className={styles.title}>{props.name}</h3>
+                <small className={styles.desc}>{props.description}</small>
             </div>
             <div>
                 {props.children}

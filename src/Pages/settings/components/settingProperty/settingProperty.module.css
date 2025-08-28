@@ -1,0 +1,26 @@
+.body {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 12px;
+}
+
+.alignmentRow {
+    flex-direction: row;
+}
+
+.alignmnetColumn {
+    flex-direction: column;
+}
+
+.body:hover {
+    background-color: rgba(29, 29, 29, 0.05);
+}
+
+.title {
+    margin: 0px;
+}
+
+.desc {
+    margin-top: 4px;
+    opacity: 70%;
+}

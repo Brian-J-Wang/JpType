@@ -1,6 +1,6 @@
-
 import styles from "./progressBar.module.css";
 
+//replace with <meter> element when possible
 
 type ProgressBarType = {
     /** How complete the bar is ranging from 0.0 to 1.0 */

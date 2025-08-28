@@ -35,19 +35,20 @@ export const SettingContextProvider: React.FC<SettingContextProviderType> = (pro
         let property = localStorageValue;
 
         while (propertyTree.length != 0) {
-            const next = propertyTree.shift();
+            property = property[propertyTree.shift()!];
 
-            if (!next) { break; }
+            console.log(property);
 
-            property = property[next];
+            if (property == undefined) {
+                throw new Error("property not found");
+            }
 
-            if (!property) {
-                console.error("invalid identifier, property not found");
-                return undefined;
+            if (propertyTree.length == 0) {
+                return property;
             }
         }
 
-        return property;
+        return undefined;
     }
 
     return (

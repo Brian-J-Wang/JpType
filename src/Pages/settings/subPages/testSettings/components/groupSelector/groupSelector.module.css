@@ -1,0 +1,23 @@
+.body {
+    opacity: 50%;
+    border: 1px solid #292929;
+    width: 25%;
+    padding: 2px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.body_inactive:hover {
+    opacity: 75%;
+}
+
+.body_active {
+    opacity: 100%
+}
+
+.title {
+    margin: 0px;
+}

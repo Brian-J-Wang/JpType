@@ -1,0 +1,21 @@
+.body {
+    margin-top: 24px;
+}
+
+.header {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.firstHR {
+    margin: auto 0px;
+    width: 8px;
+    border: none;
+    border-top: 1px solid rgba(29, 29, 29, 0.2);
+}
+
+.title {
+    margin: 0px 0px 0px 4px;
+    color: rgba(29, 29, 29, 0.9)
+}
+
