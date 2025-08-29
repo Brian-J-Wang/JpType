@@ -8,6 +8,7 @@
     gap: 8px;
     background-color: white;
     cursor: pointer;
+    box-shadow: 1px 1px 0px 0px #292929;
 }
 
 .body_inactive:hover {

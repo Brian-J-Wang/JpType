@@ -13,11 +13,25 @@ const HiriganaGroupSelector: React.FC = (props) => {
     const settingContext = useContext(SettingContext);
     const [ allowedList, setAllowedList ] = useState<TestSettingContextType["hirigana"]["allowedGroups"]>(settingContext.getProperty("hirigana.allowedGroups"))
 
-    console.log(allowedList);
-
     const handleClick = (group: HiriganaGroups) => {
-        return (evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        return () => {
+            let filteredOut = false;
 
+            const newList = allowedList.filter((element) => {
+                if ( element == group ) {
+                    filteredOut = true;
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+
+            if (!filteredOut) {
+                newList.push(group);
+            }
+
+            settingContext.setProperty("hirigana.allowedGroups", newList);
+            setAllowedList(newList);
         }
     }
 
