@@ -1,9 +1,11 @@
 .page {
-    padding: 32px 160px;
+    padding: 32px 0px;
     display: flex;
     flex-direction: column;
     height: calc(100% - 80px);
     box-sizing: border-box;
+    width: 1080px;
+    margin: 0px auto;
 }
 
 .header {
@@ -46,7 +48,7 @@
 }
 
 .left_panel {
-    width: 160px;
+    min-width: 160px;
     border-right: 1px solid rgba(29, 29, 29, 0.2);
     padding: 9px 0px;
     display: flex;
@@ -60,6 +62,10 @@
     padding: 4px;
     color: #292929;
     transition: background-color 0.1s ease-in
+}
+
+.navlink_active {
+    background-color: gainsboro;
 }
 
 .navlink:hover {

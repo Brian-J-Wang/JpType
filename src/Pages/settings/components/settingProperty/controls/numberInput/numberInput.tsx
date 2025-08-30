@@ -1,5 +1,6 @@
 import { useContext, useState } from "react"
 import { SettingContext } from "../../../settingContextProvider/settingContext"
+import styles from "./numberInput.module.css"
 
 type NumberInputType = {
     identifier: string
@@ -31,7 +32,8 @@ const NumberInput: React.FC<NumberInputType> = (props) => {
         setValue(event.target.value);
     }
 
-    return (<input type="number" value={value} onChange={onChange}/>)
+    return (<input type="number" value={value} onChange={onChange} className={styles.body}/>
+    )
 }
 
 export default NumberInput;

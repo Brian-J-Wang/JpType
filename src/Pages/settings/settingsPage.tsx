@@ -33,8 +33,8 @@ const settingsPage: React.FC = (props) => {
             </div>
             <div className={styles.body}>
                 <nav className={styles.left_panel}>
-                    <NavLink to="test-settings" className={styles.navlink}>Test Settings</NavLink>
-                    <NavLink to="general" className={styles.navlink}>General</NavLink>
+                    <NavLink to="test-settings" className={({isActive}) => `${styles.navlink} ${isActive && styles.navlink_active }`}>Test Settings</NavLink>
+                    <NavLink to="general" className={({isActive}) => `${styles.navlink} ${isActive && styles.navlink_active }`}>General</NavLink>
                 </nav>
                 <div className={styles.right_panel}>
                     <Routes>
