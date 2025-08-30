@@ -52,17 +52,25 @@ const HiriganaGroupSelector: React.FC = (props) => {
 
     return (
         <div className={styles.body}>
-            <GroupSelector title={"gojoun"} isActive={shouldBeActive("gojuon")} onClick={handleClick("gojuon")}>
-                {getRandomCharacters("gojuon")}
+            <GroupSelector title={"Gojuon"} subtitle={"五十音"} isActive={shouldBeActive("gojuon")} onClick={handleClick("gojuon")}>
+                <small>
+                    The basic hirigana called the 50 sounds (though it actually contains around 46 characters)
+                </small>
             </GroupSelector>
-            <GroupSelector title={"dakuon"} isActive={shouldBeActive("dakuon")} onClick={handleClick("dakuon")}>
-                {getRandomCharacters("dakuon")}
+            <GroupSelector title={"Dakuon"} subtitle={"濁音"} isActive={shouldBeActive("dakuon")} onClick={handleClick("dakuon")}>
+                <small>
+                    Hirigana with the "dakuten" mark, which looks like a double qoute.
+                </small>
             </GroupSelector>
-            <GroupSelector title={"han-dakuon"} isActive={shouldBeActive("han-dakuon")} onClick={handleClick("han-dakuon")}>
-                {getRandomCharacters("han-dakuon")}
+            <GroupSelector title={"Han-dakuon"} subtitle={"半濁音"} isActive={shouldBeActive("han-dakuon")} onClick={handleClick("han-dakuon")}>
+                <small>
+                    Hirigana with the "handakuten" mark, which is a small circle.
+                </small>
             </GroupSelector>
-            <GroupSelector title={"yoon"} isActive={shouldBeActive("yoon")} onClick={handleClick("yoon")}>
-                {getRandomCharacters("yoon")}
+            <GroupSelector title={"Yoon"} subtitle={"拗音"} isActive={shouldBeActive("yoon")} onClick={handleClick("yoon")}>
+                <small>
+                    Compound characters with smaller ゃ, ゅ, or ょ attached to each character
+                </small>
             </GroupSelector>
         </div>
     )

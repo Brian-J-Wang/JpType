@@ -19,7 +19,7 @@ const PracticePage: React.FC = () => {
     }
     
     const onSettingClicked = () => {
-        navigate("/settings/general");
+        navigate("/settings");
     }
 
     const onProfileClicked = () => {

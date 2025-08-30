@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useMemo, useState } from "react"
 import TypingTest, { Character } from "../../classes/typingTest";
-import { useLocalStorage } from "../../../../Hooks/useLocalStorage";
+import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import TestSettingConfig from "../../../settings/subPages/testSettings/testSettingLocalStorageContext";
 import StateProxyArray from "../../classes/stateProxy";
 import generateCharacterList from "../../classes/generateCharacterList";

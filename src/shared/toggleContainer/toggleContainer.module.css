@@ -1,0 +1,22 @@
+.body {
+    opacity: 50%;
+    border: 1px solid #292929;
+    width: 25%;
+    padding: 2px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: white;
+    cursor: default;
+}
+
+.body_inactive:hover {
+    opacity: 75%;
+    box-shadow: 1px 1px 0px 0px #292929;
+}
+
+.body_active {
+    opacity: 100%;
+    box-shadow: 1px 1px 0px 0px #292929;
+}
+

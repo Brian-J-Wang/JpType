@@ -4,6 +4,7 @@
     width: 36px;
     height: 20px;
     box-shadow: #292929 1px 1px 0px 0px ;
+    cursor: pointer
 }
 
 .body_active {

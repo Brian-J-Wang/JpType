@@ -1,7 +1,12 @@
 .body {
-    margin: 30px auto;
     display: flex;
-    flex-direction: block;
+    flex-direction: column;
+    justify-content: center;
+    margin: 24px;
+}
+
+.content {
+    display: flex;
     flex-wrap: wrap;
     flex-shrink: 2;
     overflow: hidden;

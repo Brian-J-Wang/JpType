@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { localStorageType } from "../../../../Hooks/useLocalStorage";
+import { localStorageType } from "../../../../hooks/useLocalStorage";
 
 
 type SettingContextType = {

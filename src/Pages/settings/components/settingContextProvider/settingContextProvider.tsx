@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react"
-import { localStorageType, useLocalStorage } from "../../../../Hooks/useLocalStorage"
+import { localStorageType, useLocalStorage } from "../../../../hooks/useLocalStorage"
 import { SettingContext } from "./settingContext"
 
 type SettingContextProviderType = PropsWithChildren & {

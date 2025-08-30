@@ -1,24 +1,25 @@
-.body {
-    opacity: 50%;
-    border: 1px solid #292929;
-    width: 25%;
-    padding: 2px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background-color: white;
-    cursor: pointer;
-    box-shadow: 1px 1px 0px 0px #292929;
-}
-
-.body_inactive:hover {
-    opacity: 75%;
-}
-
-.body_active {
-    opacity: 100%
-}
-
 .title {
     margin: 0px;
+}
+
+.subtitle {
+    opacity: 780%;
+}
+
+.button {
+    font-size: 12px;
+    text-align: start;
+    display: inline-block;
+    padding: 2px;
+    width: fit-content;
+    background-color: rgba(0, 0, 0, 0);
+    outline: none;
+    border: none;
+    margin: auto 0px 0px 0px;
+    opacity: 40%;
+    cursor: pointer;
+}
+
+.button:hover {
+    opacity: 80%;
 }

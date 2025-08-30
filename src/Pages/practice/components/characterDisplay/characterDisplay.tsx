@@ -4,19 +4,6 @@ import Card from '../characterCard/Card';
 import { Character } from '../../classes/typingTest';
 import { SessionDataContext } from '../sessionDataProvider/sessionDataProvider';
 
-type RowDisplayBounds = {
-    upper: number,
-    lower: number
-}
-
-interface CardRendererContextProps {
-    currentRow: number
-}
-
-const CardRendererContext = createContext<CardRendererContextProps>({
-    currentRow: 0
-});
-
 type CharacterDisplayContextProps = {
     setActiveRow: Dispatch<SetStateAction<number>>,
     widthUpdateFlag: number,
@@ -166,20 +153,17 @@ const CharacterDisplay: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ clas
         setFocused(true);
     }
 
-    const handleBlur = () => {
-        sessionData.display.onBlur();
-        setFocused(false);
-    }
-
     return (
         <CharacterDisplayContext.Provider value={{setActiveRow, widthUpdateFlag}}>
-            <div className={`${styles.body} ${!focused && styles.body__state_inactive}`} ref={practiceWindow} {...props} tabIndex={0} onFocus={handleFocus}
-            onBlur={sessionData.display.onBlur} style={{ height: cardHeight * 3}}>
-                {
-                    sessionData.characters.map((characters) => {
-                        return ( <Card key={characters.id} id={characters.id} initialData={characters} hidden={cards.get(characters.id)!.hidden as boolean}/>)
-                    })
-                }
+            <div className={`${styles.body}`} style={{ height: cardHeight * 3}}>
+                <div className={`${styles.content} ${!focused && styles.body__state_inactive}`} ref={practiceWindow} {...props} tabIndex={0} onFocus={handleFocus}
+                onBlur={sessionData.display.onBlur} >
+                    {
+                        sessionData.characters.map((characters) => {
+                            return ( <Card key={characters.id} id={characters.id} initialData={characters} hidden={cards.get(characters.id)!.hidden as boolean}/>)
+                        })
+                    }
+                </div>
             </div>
         </CharacterDisplayContext.Provider>
     )

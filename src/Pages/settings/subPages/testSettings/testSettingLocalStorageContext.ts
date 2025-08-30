@@ -1,4 +1,4 @@
-import { createLocalStorage } from "../../../../Hooks/useLocalStorage"
+import { createLocalStorage } from "../../../../hooks/useLocalStorage"
 
 export type TestSettingContextType = {
     /** the number of characters to include in a test */
