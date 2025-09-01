@@ -29,10 +29,6 @@ class TypingTest {
             }, 0),
             keysTyped: 0
         }
-
-        this.cursor.onEndReached = () => {
-            console.log("ended");
-        }
     }
 
     getCharacters = () => {

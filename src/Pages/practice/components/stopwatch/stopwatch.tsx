@@ -8,7 +8,7 @@ import "./stopwatch.css"
 const Stopwatch: React.FC = () => {
     const sessionDataContext = useContext(SessionDataContext);
 
-    const watch = useRef(new Clock());
+    const clock = useRef(new Clock());
     const [timeData, setTimeData] = useState({
         minutes: 0,
         seconds: 0,
@@ -18,30 +18,22 @@ const Stopwatch: React.FC = () => {
     useEffect(() => {
         switch ( sessionDataContext.testState ) {
             case "active":
-                watch.current.start((elapsedTime) => {
-                    setTimeData(elapsedTime);
-                }, 10);
+                if (clock.current.getState() == "paused") {
+                    clock.current.resume();
+                } else {
+                    clock.current.start((elapsedTime) => {
+                        setTimeData(elapsedTime);
+                    }, 10);
+                }
                 break;
             case "complete":
-                watch.current.end();
-                sessionDataContext.setElapsedTime(watch.current.getElaspedTimeSeconds());
+                clock.current.end();
+                sessionDataContext.setElapsedTime(clock.current.getElaspedTimeSeconds());
                 break;
             case "paused":
-                watch.current.pause();
-                break;
-            case "reset":
-                watch.current.reset();
-                setTimeData({
-                    minutes: 0,
-                    seconds: 0,
-                    ms: 0
-                });
-                break;
-            case "resumed":
-                watch.current.resume();
+                clock.current.pause();
                 break;
         }
-
     }, [ sessionDataContext.testState ]);
 
     const formatSeconds = () => {
