@@ -16,6 +16,16 @@ const Stopwatch: React.FC = () => {
     });
 
     useEffect(() => {
+        const id = sessionDataContext.events.onTestRestart.subscribe(() => {
+            clock.current.reset();
+        })
+
+        return () => {
+            sessionDataContext.events.onTestRestart.unsubscribe(id);
+        };
+    }, [])
+
+    useEffect(() => {
         switch ( sessionDataContext.testState ) {
             case "active":
                 if (clock.current.getState() == "paused") {

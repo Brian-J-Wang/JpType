@@ -23,7 +23,7 @@ type SessionDataType = {
         onfocus: () => void,
         onBlur: () => void
     }
-    event: {
+    events: {
         onTestComplete: ReturnType<typeof UseEventEmitter<() => void>>
         onTestRestart: ReturnType<typeof UseEventEmitter<() => void>>
     }
@@ -100,7 +100,7 @@ const SessionDataProvider: React.FC<{
             onfocus: onDisplayFocus,
             onBlur: onDisplayBlur
         },
-        event: {
+        events: {
             onTestComplete,
             onTestRestart
         }
