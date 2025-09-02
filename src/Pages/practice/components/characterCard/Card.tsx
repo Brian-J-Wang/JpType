@@ -1,17 +1,13 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
-import { CardElementProps, CharacterDisplayContext } from '../characterDisplay/characterDisplay';
 import { Character } from '../../classes/typingTest';
 import { SessionDataContext } from '../sessionDataProvider/sessionDataProvider';
-
 import styles from './Card.module.css';
-import { generateRandomHexColor } from '../../../../utilities/generateRandomHexColor';
 
 type CardProps = {
     id: string,
     initialData: Character,
     hidden: boolean
 }
-
 
 /** responsible for rendering the contents of the character */
 const Card: React.FC<CardProps> = (props) => {
@@ -20,7 +16,7 @@ const Card: React.FC<CardProps> = (props) => {
     const [ character, setCharacter ] = useState<Character>(props.initialData);
 
     useEffect(() => {
-        setCharacter(sessionData.characters.register(props.id, setCharacter) as Character)
+        sessionData.characters.register(props.id, setCharacter);
     }, [])
 
     let stateStyle = "";
