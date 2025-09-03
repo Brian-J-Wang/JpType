@@ -12,10 +12,11 @@
     overflow: hidden;
     transition: filter 0.2s ease-in-out;
     outline: none;
-}
-
-.body__state_inactive {
     opacity: 25%;
     filter: blur(2px);
 }
 
+.content:focus {
+    opacity: 100%;
+    filter: none;
+}

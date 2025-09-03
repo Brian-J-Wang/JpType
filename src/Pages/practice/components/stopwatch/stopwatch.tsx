@@ -17,7 +17,13 @@ const Stopwatch: React.FC = () => {
 
     useEffect(() => {
         const id = sessionDataContext.events.onTestRestart.subscribe(() => {
+            console.log("ere");
             clock.current.reset();
+            setTimeData({
+                minutes: 0,
+                seconds: 0,
+                ms: 0
+            })
         })
 
         return () => {

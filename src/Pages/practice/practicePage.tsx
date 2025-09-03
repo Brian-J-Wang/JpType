@@ -12,7 +12,7 @@ const PracticePage: React.FC = () => {
     const navigate = useNavigate();
     const sessionDataContext = useContext(SessionDataContext);    
 
-    const resetGame = () => {
+    const resetSession = () => {
         if ( sessionDataContext.testState == "complete" ) {
             sessionDataContext.resetSession();
         }
@@ -53,7 +53,7 @@ const PracticePage: React.FC = () => {
                     <Stopwatch/>
                 </div>
                 <div className={`${styles.footer__buttonBar} ${!(sessionDataContext.testState == "complete") && styles.footer__buttonBar_hidden}`}>
-                    <button className={`jpType__button`} onClick={resetGame}>Reset</button>
+                    <button className={`jpType__button`} onClick={resetSession}>Reset</button>
                 </div>
             </div>
             

@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useEffect, useMemo, useState } from "react"
 import TypingTest, { Character } from "../../classes/typingTest";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
-import TestSettingConfig from "../../../settings/subPages/testSettings/testSettingLocalStorageContext";
+import TestSettingConfig, { TestSettingContextType } from "../../../settings/subPages/testSettings/testSettingLocalStorageContext";
 import StateProxyArray from "../../classes/stateProxy";
 import generateCharacterList from "../../classes/generateCharacterList";
 import { generateUniqueHash } from "../../../../utilities/GenerateUniqueHash";
@@ -24,7 +24,6 @@ type SessionDataType = {
         onBlur: () => void
     }
     events: {
-        onTestComplete: ReturnType<typeof UseEventEmitter<() => void>>
         onTestRestart: ReturnType<typeof UseEventEmitter<() => void>>
     }
 }
@@ -32,32 +31,30 @@ type SessionDataType = {
 //@ts-ignore
 export const SessionDataContext = createContext<SessionDataType>();
 
+const buildCharacterList = (config: TestSettingContextType) => {
+    const characterList = generateCharacterList(config ).map((element, index) => {
+        return {
+            en: element.en,
+            jp: element.jp,
+            display: "",
+            id: generateUniqueHash(),
+            state: index == 0 ? "active" : "inactive"
+        } as Character
+    });
+    return new StateProxyArray<Character>(characterList);
+}
+
 const SessionDataProvider: React.FC<{
     children: ReactNode
 }> = (props) => {
     const [ testState, _setTestState ] = useState<TestState>("inactive");
     const [ progress, _setProgress ] = useState<number>(0);
     const [ elapsedTime, setElapsedTime ] = useState<number>(0);
-
     const [ testSettingConfig ] = useLocalStorage(TestSettingConfig);
-
-    const buildCharacterList = () => {
-        const characterList = generateCharacterList(testSettingConfig ).map((element, index) => {
-            return {
-                en: element.en,
-                jp: element.jp,
-                display: "",
-                id: generateUniqueHash(),
-                state: index == 0 ? "active" : "inactive"
-            } as Character
-        });
-        return new StateProxyArray<Character>(characterList);
-    }
-    const [ characters ] = useState<StateProxyArray<Character>>(buildCharacterList());
+    const [ characters, setCharacters ] = useState<StateProxyArray<Character>>(buildCharacterList(testSettingConfig));
     const [ testSession ] = useState<TypingTest>(new TypingTest(characters));
 
     //event emitters
-    const onTestComplete = UseEventEmitter<() => void>();
     const onTestRestart = UseEventEmitter<() => void>();
     
     useEffect(() => {
@@ -67,6 +64,7 @@ const SessionDataProvider: React.FC<{
     const resetSession = () => {
         _setTestState("inactive");
         onTestRestart.emit();
+        setCharacters(buildCharacterList(testSettingConfig));
     }
 
     const startTest = () => {
@@ -85,8 +83,10 @@ const SessionDataProvider: React.FC<{
     }
 
     const onDisplayBlur = () => {
-        _setTestState("paused");
         document.removeEventListener("keydown", testSession.parseKeyboardInput);
+        if (testState == "active") {
+            _setTestState("paused");
+        }
     }    
 
     return <SessionDataContext.Provider value={{
@@ -101,7 +101,6 @@ const SessionDataProvider: React.FC<{
             onBlur: onDisplayBlur
         },
         events: {
-            onTestComplete,
             onTestRestart
         }
     }}>

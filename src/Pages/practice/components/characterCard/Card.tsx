@@ -5,8 +5,7 @@ import styles from './Card.module.css';
 
 type CardProps = {
     id: string,
-    initialData: Character,
-    hidden: boolean
+    initialData: Character
 }
 
 /** responsible for rendering the contents of the character */
@@ -42,7 +41,7 @@ const Card: React.FC<CardProps> = (props) => {
     }
     
     return (
-        <div className={`${styles.base} ${stateStyle} ${props.hidden && styles.hidden}`} ref={elementReference} id={props.id}>
+        <div className={`${styles.base} ${stateStyle}`} ref={elementReference} id={props.id}>
             <h2 className={styles.jp}>{character.jp}</h2>
             <p className={styles.en}>{character.display}</p>
         </div>

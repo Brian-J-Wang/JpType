@@ -10,7 +10,6 @@ function generateCharacterList(config: TestSettingContextType) {
 
     if (config.hirigana.enabled) {
         new Set(config.hirigana.allowedGroups).forEach((element: TestSettingContextType["hirigana"]["allowedGroups"][number]) => {
-            console.log(element);
             characterList.push(...Hirigana[element]);
         })
     }
@@ -25,8 +24,6 @@ function generateCharacterList(config: TestSettingContextType) {
         const index = Math.floor(Math.random() * characterList.length);
         output.push(characterList[index]);
     }
-
-    console.log(output );
 
     return output;
 }

@@ -3,17 +3,7 @@ import React, { createContext, Dispatch, RefObject, SetStateAction, useContext, 
 import Card from '../characterCard/Card';
 import { Character } from '../../classes/typingTest';
 import { SessionDataContext } from '../sessionDataProvider/sessionDataProvider';
-
-type CharacterDisplayContextProps = {
-    setActiveRow: Dispatch<SetStateAction<number>>,
-    widthUpdateFlag: number,
-}
-export const CharacterDisplayContext = createContext<CharacterDisplayContextProps>({
-    setActiveRow: function (value: React.SetStateAction<number>): void {
-        throw new Error('Function not implemented.');
-    },
-    widthUpdateFlag: 0,
-})
+import useCardManager from './useCardManager';
 
 export type CardElementProps = Character & {
     row: number
@@ -27,76 +17,20 @@ type internalCardProps = {
 //responsible for positioning and displaying the appropriate characters
 const CharacterDisplay: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, style, ...props }) => {
     const sessionData = useContext(SessionDataContext);
+    const cardManager = useCardManager(sessionData.characters);
     const practiceWindow = useRef<HTMLDivElement>(null);
-    
-    const [ activeRow, setActiveRow ] = useState(0);
-    
-    //This logic assumes that each component will call the calculate row in the order that they
-    //were created.
-    const maxRow = useRef<number>(-1);
 
-    const calculateDisplayBounds = (row: number) => {
-        if ( row <= 0 ) {
-            return {
-                upper: 2,
-                lower: 0
-            }
-        } else if (row >= maxRow.current - 1) {
-            return {
-                upper: maxRow.current,
-                lower: maxRow.current - 2
-            }
-        } else {
-            return {
-                upper: row + 1,
-                lower: row - 1
-            }
-        }
-    }
-
-    const [ cards, setCards ] = useState<Map<string, internalCardProps>>(() => new Map(sessionData.characters.map((character) => {
-        return [
-            character.id,
-            {
-                row: -1,
-                hidden: false
-            }
-        ]}))
-    );
-    
     useEffect(() => {
         const onCursorUpdate = (oldValue: Character, newValue: Character) => {
-            if (oldValue.id === newValue.id) {
-                return;
-            }
-
-            const newRow = cards.get(newValue.id)!.row;
-
-            if (newRow != activeRow) {
-                setActiveRow(newRow);
-
-                recalculateInternalCardProps(newRow);
-            }
+            cardManager.setCurrentCard(newValue.id);
         }
 
         sessionData.testSession.cursor.addSubscriber(onCursorUpdate);
         return () => {
             sessionData.testSession.cursor.removeSubscriber(onCursorUpdate);
         }
-    }, [ cards ]);    
+    }, []);    
 
-    const recalculateInternalCardProps = (row: number = activeRow) => {
-        const displayBounds = calculateDisplayBounds(row);
-
-        const newCards = new Map(cards);
-    
-        [...newCards.entries()].forEach(([key, value]) => {
-            value.hidden = value.row > displayBounds.upper || value.row < displayBounds.lower;
-        });
-
-        setCards(newCards);
-    }
-    
     const [ cardHeight, setCardHeight ] = useState(0);
     useEffect(() => {
         const child = practiceWindow.current?.firstElementChild;
@@ -106,66 +40,58 @@ const CharacterDisplay: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ clas
         }
     }, [])
 
-    //builds and defines the rows, updates when the window is resized.
-    const [ widthUpdateFlag, setWidthUpdateFlag ] = useState(0);
     useEffect(() => {
-        const children = Array.from(practiceWindow.current!.children);
-        const displaySize = practiceWindow.current?.getBoundingClientRect().width ?? -1;
-        let cumulativeLength = 0;
+        const rowWidth = practiceWindow.current?.getBoundingClientRect().width;
 
-        const newCards = new Map(cards);
+        cardManager.setRowWidth(rowWidth ?? 0);
 
-        children.forEach((child, index) => {
-            const threshold = Math.ceil(cumulativeLength / displaySize) * displaySize;
-
-            const elementLength = child.scrollWidth;
-
-            if (cumulativeLength + elementLength > threshold && cumulativeLength != threshold) {
-                cumulativeLength = threshold + elementLength;
-            } else {
-                cumulativeLength += elementLength;
+        const cardWidths = Array.from(practiceWindow.current?.children!).map((child) => {
+            return {
+                id: child.id,
+                width: child.getBoundingClientRect().width
             }
+        })
 
-            let row = Math.floor(cumulativeLength / displaySize);
+        cardManager.setCardWidths(cardWidths);
+    }, []);
 
-            if (cumulativeLength % displaySize == 0) {
-                row -= 1;
-            }
+    //display resizing and row recalculations
+    useEffect(() => {
+        let resizeTimer:number ;
+        const updateRowWidth = () => {
+            clearTimeout(resizeTimer);
 
-            if (row > maxRow.current) {
-                maxRow.current = row;
-            }
+            resizeTimer = setTimeout(() => {
+                const rowWidth = practiceWindow.current?.getBoundingClientRect().width;
+                cardManager.setRowWidth(rowWidth ?? 0);
 
-            const displayBounds = calculateDisplayBounds(activeRow);
-            const hidden = row > displayBounds.upper || row < displayBounds.lower;
-            newCards.set(child.id, {
-                row: row,
-                hidden: hidden
-            })
-        });
+            }, 200)
+            
+        }
 
-        setCards(newCards);
-    }, [ widthUpdateFlag ])
+        window.addEventListener("resize", updateRowWidth);
 
-    const [ focused, setFocused ] = useState(false);
-    const handleFocus = () => {
-        sessionData.display.onfocus();
-        setFocused(true);
-    }
+        return () => {
+            window.removeEventListener("resize", updateRowWidth);
+        }
+    }, [])
 
     return (
-        <CharacterDisplayContext.Provider value={{setActiveRow, widthUpdateFlag}}>
-            <div className={`${styles.body}`} style={{ height: cardHeight * 3}}>
-                <div className={`${styles.content} ${!focused && styles.body__state_inactive}`} ref={practiceWindow} {...props} tabIndex={0} onFocus={handleFocus}
-                onBlur={sessionData.display.onBlur} >
-                    {
-                        sessionData.characters.map((characters) => {
-                            return ( <Card key={characters.id} id={characters.id} initialData={characters} hidden={cards.get(characters.id)!.hidden as boolean}/>)
-                        })
-                    }
-                </div>
+        <div className={`${styles.body}`} style={{ height: cardHeight * 3}}>
+            <div className={`${styles.content}`} ref={practiceWindow} {...props} tabIndex={0} onFocus={sessionData.display.onfocus} onBlur={sessionData.display.onBlur}>
+                {
+                    cardManager.activeCards.map((active) => {
+                        const data = sessionData.characters.find((el) => el.id == active);
+
+                        if (data) {
+                            return ( <Card key={data.id} id={data.id} initialData={data}/>)
+                        } else {
+                            return <></>
+                        }
+                    })
+                }
             </div>
-        </CharacterDisplayContext.Provider>
+        </div>
     )
 }
 

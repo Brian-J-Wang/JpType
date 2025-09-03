@@ -30,12 +30,6 @@
     margin: 0px;
 }
 
-.hidden {
-    height: 0px;
-    overflow: hidden;
-    margin: 0px;
-}
-
 .state_inactive {
     color: rgba(0, 0, 0, 0.4);
 }
