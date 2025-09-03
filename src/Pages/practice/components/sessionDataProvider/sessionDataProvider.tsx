@@ -19,10 +19,7 @@ type SessionDataType = {
     resetSession: () => void,
     characters: StateProxyArray<Character>,
     testSession: TypingTest,
-    display: {
-        onfocus: () => void,
-        onBlur: () => void
-    }
+    setDisplayFocused: (focused: boolean) => void
     events: {
         onTestRestart: ReturnType<typeof UseEventEmitter<() => void>>
     }
@@ -51,43 +48,62 @@ const SessionDataProvider: React.FC<{
     const [ progress, _setProgress ] = useState<number>(0);
     const [ elapsedTime, setElapsedTime ] = useState<number>(0);
     const [ testSettingConfig ] = useLocalStorage(TestSettingConfig);
-    const [ characters, setCharacters ] = useState<StateProxyArray<Character>>(buildCharacterList(testSettingConfig));
-    const [ testSession ] = useState<TypingTest>(new TypingTest(characters));
+    const [ characters, setCharacters ] = useState<StateProxyArray<Character>>(() => buildCharacterList(testSettingConfig));
+    const [ testSession, setTestSession ] = useState<TypingTest>(() => {
+        const typingtest = new TypingTest(characters);
+        typingtest.cursor.onEndReached = () => { _setTestState("complete") };
+        return typingtest;
+    });
 
     //event emitters
     const onTestRestart = UseEventEmitter<() => void>();
-    
-    useEffect(() => {
-        testSession.cursor.onEndReached = stopTest;
-    }, []);
 
     const resetSession = () => {
         _setTestState("inactive");
+        const newCharacters = buildCharacterList(testSettingConfig)
+        setCharacters(newCharacters);
+        setTestSession(() => {
+            const typingtest = new TypingTest(newCharacters);
+            typingtest.cursor.onEndReached = () => { _setTestState("complete") };
+            return typingtest;
+        });
         onTestRestart.emit();
-        setCharacters(buildCharacterList(testSettingConfig));
     }
 
-    const startTest = () => {
-        _setTestState("active");
-        document.removeEventListener("keydown", startTest);
-    }
-
-    const stopTest = () => {
-        _setTestState("complete");
-        document.removeEventListener("keydown", testSession.parseKeyboardInput);
-    }
-
-    const onDisplayFocus = () => {
-        document.addEventListener("keydown", testSession.parseKeyboardInput);
-        document.addEventListener("keydown", startTest);
+    const setDisplayFocused = (focused: boolean) => {
+        if (!focused) {
+            if (testState == "active") {
+                _setTestState("paused");
+            }
+        } else {
+            if (testState == "paused") {
+                _setTestState("active")
+            }
+        }
     }
 
     const onDisplayBlur = () => {
-        document.removeEventListener("keydown", testSession.parseKeyboardInput);
         if (testState == "active") {
             _setTestState("paused");
         }
-    }    
+    }
+
+    useEffect(() => {
+        const handleKeyDown = (evt: KeyboardEvent) => {
+            if (testState == "inactive") {
+                _setTestState("active");
+            } else if (testState != "active") {
+                return;
+            } 
+
+            testSession.parseKeyboardInput(evt);
+        }
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        }
+    }, [ testState, testSession])
 
     return <SessionDataContext.Provider value={{
         progress,
@@ -96,10 +112,7 @@ const SessionDataProvider: React.FC<{
         resetSession,
         characters,
         testSession,
-        display: {
-            onfocus: onDisplayFocus,
-            onBlur: onDisplayBlur
-        },
+        setDisplayFocused,
         events: {
             onTestRestart
         }

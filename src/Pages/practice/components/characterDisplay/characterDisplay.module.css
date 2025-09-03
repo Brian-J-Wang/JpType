@@ -10,10 +10,11 @@
     flex-wrap: wrap;
     flex-shrink: 2;
     overflow: hidden;
-    transition: filter 0.2s ease-in-out;
     outline: none;
     opacity: 25%;
     filter: blur(2px);
+    transition: filter 0.2s ease-in-out;
+    transition: opacity 0.2s ease-in-out;
 }
 
 .content:focus {

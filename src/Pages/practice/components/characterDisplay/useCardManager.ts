@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction, useMemo, useRef, useState } from "react"
+import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { Character } from "../../classes/typingTest";
+import { SessionDataContext } from "../sessionDataProvider/sessionDataProvider";
 
 type CharacterData = {
     id: string,
@@ -106,8 +107,10 @@ class CardManager extends Array<CharacterData> {
 
     setCurrentCard(id: string) {
         this.currentCard = id;
-        this.recalculateCurrentRow(id);
-        this.setActiveCards(this.getRows(this.currentRow));
+        const hasChanged = this.recalculateCurrentRow(id);
+        if (hasChanged) {
+            this.setActiveCards(this.getRows(this.currentRow));
+        }
     }
 
 
@@ -116,7 +119,11 @@ class CardManager extends Array<CharacterData> {
      * @returns true if the current row has changed.
      */
     recalculateCurrentRow(id: string) {
+        console.log(this.find(el => el.id == id));
+
         const newRow = this.find(el => el.id == id)?.row ?? -1;
+
+        console.log(newRow);
 
         if (newRow == this.currentRow) {
             return false;
@@ -142,18 +149,30 @@ function buildElementFromCharacters(characters: Character[]): CharacterData[] {
 }
 
 const useCardManager = (initialCharacterSet: Character[]) => {
+    const sessionData = useContext(SessionDataContext);
     const [ activeCards, setActiveCards ] = useState<string[]>([]);
     const [ cardManager, setCardManager ] = useState<CardManager>(() => new CardManager(buildElementFromCharacters(initialCharacterSet), setActiveCards));
 
-    //rows gets recalculated when width gets set 
+    useEffect(() => {
+        const onCursorUpdate = (oldValue: Character, newValue: Character) => {
+            console.log(newValue.id);
+            cardManager.setCurrentCard(newValue.id);
+        }
 
-    console.log(activeCards);
+        sessionData.testSession.cursor.addSubscriber(onCursorUpdate);
+        return () => {
+            sessionData.testSession.cursor.removeSubscriber(onCursorUpdate);
+        }
+    }, [ cardManager, sessionData.testSession ]);   
+
+    useEffect(() => {
+        setCardManager(new CardManager(buildElementFromCharacters(sessionData.characters), setActiveCards));
+    }, [sessionData.characters])
 
     return {
         activeCards,
         setRowWidth: cardManager.setRowWidth.bind(cardManager),
         setCardWidths: cardManager.setCardWidths.bind(cardManager),
-        setCurrentCard: cardManager.setCurrentCard.bind(cardManager)
     }
 }
 
