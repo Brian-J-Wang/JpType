@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useEffect, useMemo, useState } from "react"
+import { createContext, ReactNode, useEffect, useState } from "react"
 import TypingTest, { Character } from "../../classes/typingTest";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import TestSettingConfig, { TestSettingContextType } from "../../../settings/subPages/testSettings/testSettingLocalStorageContext";
@@ -79,12 +79,6 @@ const SessionDataProvider: React.FC<{
             if (testState == "paused") {
                 _setTestState("active")
             }
-        }
-    }
-
-    const onDisplayBlur = () => {
-        if (testState == "active") {
-            _setTestState("paused");
         }
     }
 

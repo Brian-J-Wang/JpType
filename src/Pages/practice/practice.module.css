@@ -16,6 +16,7 @@
 
 .header__topBar {
     display: flex;
+    justify-content: center;
     gap: 8px;
     margin-bottom: 8px;
     transition: opacity 0.3s ease-in;

@@ -33,16 +33,6 @@ const PracticePage: React.FC = () => {
                     <button onClick={onSettingClicked} className="jpType__button">Settings</button>
                     <button onClick={onProfileClicked} className="jpType__button">Profile</button>
                 </div>
-                <StatPanel/>
-                <div className={ styles.header__quickSettings }>
-                    <button className="jpType__square-button"> 
-                        <img className="jpType__icon-small" src={settingIcon} alt="Settings" /> 
-                    </button>
-                    <button className="jpType__square-button">10</button>
-                    <button className="jpType__square-button">30</button>
-                    <button className="jpType__square-button">50</button>
-                    <button className="jpType__square-button">Custom</button>
-                </div>
             </div>
             <Suspense fallback={<div>loading</div>}>
                 <CharacterDisplay/>

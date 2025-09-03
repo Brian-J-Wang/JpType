@@ -1,17 +1,12 @@
-import styles from './characterDisplay.module.css';
-import React, { act, createContext, Dispatch, RefObject, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import Card from '../characterCard/Card';
+import { useContext, useEffect, useRef, useState } from 'react';
+import Card from '../characterCard/Card'
 import { Character } from '../../classes/typingTest';
 import { SessionDataContext } from '../sessionDataProvider/sessionDataProvider';
 import useCardManager from './useCardManager';
+import styles from './characterDisplay.module.css';
 
 export type CardElementProps = Character & {
     row: number
-}
-
-type internalCardProps = {
-    row: number,
-    hidden: boolean
 }
 
 //responsible for positioning and displaying the appropriate characters
