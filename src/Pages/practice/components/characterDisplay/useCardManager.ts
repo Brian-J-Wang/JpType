@@ -13,7 +13,8 @@ class CardManager extends Array<CharacterData> {
     private maxRowIndex: number = 0;
     private currentRow: number = -1;
     private currentCard: string = ""; 
-    private setActiveCards: Dispatch<SetStateAction<string[]>>
+    private setActiveCards: Dispatch<SetStateAction<string[]>>;
+    private cardWidthsCalculated: boolean = false;
     constructor(data: CharacterData[], setActiveCards: Dispatch<SetStateAction<string[]>>) {
         if (Array.isArray(data)) {
             super(...data)
@@ -62,11 +63,16 @@ class CardManager extends Array<CharacterData> {
     }
 
     setRowWidth (width: number) {
+        if (this.rowWidth == width) {
+            return;
+        }
         this.rowWidth = width;
         this.recalculateCardRows();
     }
 
     setCardWidths (cardWidths: Omit<CharacterData, "row">[]) {
+        if (this.cardWidthsCalculated) return;
+
         const lookup = new Map(this.map(obj => [ obj.id, obj ]));
 
         cardWidths.forEach((card) => {
@@ -77,6 +83,7 @@ class CardManager extends Array<CharacterData> {
             }
         });
         this.recalculateCardRows();
+        this.cardWidthsCalculated = true;
     }
 
     getRows(activeRow = -1) {
@@ -107,15 +114,26 @@ class CardManager extends Array<CharacterData> {
 
     setCurrentCard(id: string) {
         this.currentCard = id;
+        
         const hasChanged = this.recalculateCurrentRow(id);
         if (hasChanged) {
             this.setActiveCards(this.getRows(this.currentRow));
         }
     }
 
+    shiftRow(fn: ( currentRow: number ) => number ) {
+        const newRow = fn(this.currentRow);
+
+        if (newRow < 0 || newRow > this.maxRowIndex) {
+            return;
+        }
+
+        this.currentRow = newRow;
+        this.setActiveCards(this.getRows(this.currentRow));
+    }
 
     /**
-     * @param id the string id of the card
+     * @param id the string id of the card.
      * @returns true if the current row has changed.
      */
     recalculateCurrentRow(id: string) {
@@ -161,12 +179,13 @@ const useCardManager = (initialCharacterSet: Character[]) => {
 
     useEffect(() => {
         setCardManager(new CardManager(buildElementFromCharacters(sessionData.characters), setActiveCards));
-    }, [sessionData.characters])
+    }, [ sessionData.characters ])
 
     return {
         activeCards,
         setRowWidth: cardManager.setRowWidth.bind(cardManager),
         setCardWidths: cardManager.setCardWidths.bind(cardManager),
+        shiftRow: cardManager.shiftRow.bind(cardManager)
     }
 }
 

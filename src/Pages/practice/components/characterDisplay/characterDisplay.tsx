@@ -37,7 +37,7 @@ const CharacterDisplay: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ clas
     useEffect(() => {
         const rowWidth = practiceWindow.current?.getBoundingClientRect().width;
         cardManager.setRowWidth(rowWidth ?? 0);
-    }, [ cardManager ]);
+    }, [ cardManager.setRowWidth ]);
 
     //display resizing and row recalculations
     useEffect(() => {
@@ -60,23 +60,56 @@ const CharacterDisplay: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ clas
         return () => {
             window.removeEventListener("resize", updateRowWidth);
         }
-    }, [])
+    }, []);
+
+    //refocusing on display when test is restarted
+    useEffect(() => {
+        sessionData.events.onTestRestart.subscribe(() => {
+            practiceWindow.current?.focus();
+        })
+    }, []);
+
+    useEffect(() => {
+        let interval;
+        const updateCurrentRow = (evt: WheelEvent) => {
+            if (sessionData.testState != "complete") {
+                return;
+            }
+            const bounds = practiceWindow.current?.getBoundingClientRect()!;
+            const isInside = evt.clientX >= bounds.left &&
+                evt.clientX <= bounds.right &&
+                evt.clientY <= bounds.bottom &&
+                evt.clientY >= bounds.top;
+
+            if (isInside) {
+                if (evt.deltaY < 0) {
+                    cardManager.shiftRow((currentRow) => currentRow - 1);
+                } else {
+                    cardManager.shiftRow((currentRow) => currentRow + 1);
+                }
+            }
+        }
+
+        document.addEventListener("wheel", updateCurrentRow);
+
+        return () => {
+            document.removeEventListener("wheel", updateCurrentRow);
+        }
+    }, [ sessionData.testState, cardManager ])
 
     const handleFocus = (focus: boolean) => () => {
+        if (sessionData.testState == "complete") {
+            return;
+        }
         sessionData.setDisplayFocused(focus)
     }
 
     return (
-        <div className={`${styles.body}`} style={{ height: cardHeight * 3}}>
-            <div className={`${styles.content}`} ref={practiceWindow} {...props} tabIndex={0} onFocus={handleFocus(true)} onBlur={handleFocus(false)}>
+        <div className={`${styles.body}`} style={{ height: 90 * 3}}>
+            <div className={`${styles.content} ${sessionData.testState == "complete" && styles.content_forcedFocus}`} ref={practiceWindow} {...props} tabIndex={0} onFocus={handleFocus(true)} onBlur={handleFocus(false)}>
                 {
                     cardManager.activeCards.map((active, index) => {
-                        if (index == 0) {
-                            console.log(sessionData.characters);
-                        }
-
                         const data = sessionData.characters.find((el) => el.id == active);
-
                         if (data) {
                             return ( <Card key={data.id} id={data.id} initialData={data}/>)
                         } else {

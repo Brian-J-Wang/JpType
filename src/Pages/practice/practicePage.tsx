@@ -35,12 +35,16 @@ const PracticePage: React.FC = () => {
             </div>
             <Suspense fallback={<div>loading</div>}>
                 <CharacterDisplay/>
+                {
+                    sessionDataContext.testState != "complete" && (
+                        <div className={ styles.footer__stats }>
+                            <ProgressBar className={ styles.progressBar } progress={sessionDataContext.progress}></ProgressBar>
+                            <Stopwatch/>
+                        </div>
+                    )
+                }
             </Suspense>
             <div className={ styles.footer }>
-                <div className={ styles.footer__stats }>
-                    <ProgressBar className={ styles.progressBar } progress={sessionDataContext.progress}></ProgressBar>
-                    <Stopwatch/>
-                </div>
                 <div className={`${styles.footer__buttonBar} ${!(sessionDataContext.testState == "complete") && styles.footer__buttonBar_hidden}`}>
                     <button className={`jpType__button`} onClick={resetSession}>Reset</button>
                 </div>
