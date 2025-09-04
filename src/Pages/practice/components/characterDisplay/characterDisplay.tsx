@@ -70,7 +70,11 @@ const CharacterDisplay: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ clas
         <div className={`${styles.body}`} style={{ height: cardHeight * 3}}>
             <div className={`${styles.content}`} ref={practiceWindow} {...props} tabIndex={0} onFocus={handleFocus(true)} onBlur={handleFocus(false)}>
                 {
-                    cardManager.activeCards.map((active) => {
+                    cardManager.activeCards.map((active, index) => {
+                        if (index == 0) {
+                            console.log(sessionData.characters);
+                        }
+
                         const data = sessionData.characters.find((el) => el.id == active);
 
                         if (data) {

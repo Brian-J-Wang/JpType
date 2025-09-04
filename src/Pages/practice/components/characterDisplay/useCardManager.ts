@@ -119,12 +119,7 @@ class CardManager extends Array<CharacterData> {
      * @returns true if the current row has changed.
      */
     recalculateCurrentRow(id: string) {
-        console.log(this.find(el => el.id == id));
-
         const newRow = this.find(el => el.id == id)?.row ?? -1;
-
-        console.log(newRow);
-
         if (newRow == this.currentRow) {
             return false;
         } else {
@@ -155,7 +150,6 @@ const useCardManager = (initialCharacterSet: Character[]) => {
 
     useEffect(() => {
         const onCursorUpdate = (oldValue: Character, newValue: Character) => {
-            console.log(newValue.id);
             cardManager.setCurrentCard(newValue.id);
         }
 

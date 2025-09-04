@@ -15,7 +15,6 @@
     filter: blur(2px);
     transition: filter 0.2s ease-in-out;
     transition: opacity 0.2s ease-in-out;
-    margin: 0px auto;
 }
 
 .content:focus {

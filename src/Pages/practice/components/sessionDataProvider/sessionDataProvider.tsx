@@ -49,24 +49,17 @@ const SessionDataProvider: React.FC<{
     const [ elapsedTime, setElapsedTime ] = useState<number>(0);
     const [ testSettingConfig ] = useLocalStorage(TestSettingConfig);
     const [ characters, setCharacters ] = useState<StateProxyArray<Character>>(() => buildCharacterList(testSettingConfig));
-    const [ testSession, setTestSession ] = useState<TypingTest>(() => {
-        const typingtest = new TypingTest(characters);
-        typingtest.cursor.onEndReached = () => { _setTestState("complete") };
-        return typingtest;
-    });
+    const [ testSession, setTestSession ] = useState<TypingTest>(() => { return buildTypingTest(characters) });
 
     //event emitters
     const onTestRestart = UseEventEmitter<() => void>();
 
     const resetSession = () => {
+        _setProgress(0);
         _setTestState("inactive");
         const newCharacters = buildCharacterList(testSettingConfig)
         setCharacters(newCharacters);
-        setTestSession(() => {
-            const typingtest = new TypingTest(newCharacters);
-            typingtest.cursor.onEndReached = () => { _setTestState("complete") };
-            return typingtest;
-        });
+        setTestSession(() => buildTypingTest(newCharacters));
         onTestRestart.emit();
     }
 
@@ -80,6 +73,19 @@ const SessionDataProvider: React.FC<{
                 _setTestState("active")
             }
         }
+    }
+
+    function buildTypingTest (characters: Character[]) {
+        const typingTest = new TypingTest(characters);
+        console.log(characters);
+        typingTest.cursor.onEndReached = () => {
+            _setTestState("complete");
+        };
+        typingTest.cursor.addSubscriber(() => {
+            _setProgress(typingTest.cursor.currentIndex / (typingTest.cursor.array.length - 1))
+        });
+
+        return typingTest;
     }
 
     useEffect(() => {

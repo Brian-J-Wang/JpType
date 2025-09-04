@@ -1,8 +1,7 @@
 import '../../assets/JPType.css';
-import { useState, useRef, useEffect, useContext, lazy, Suspense } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ProgressBar, SessionDataContext, StatPanel, Stopwatch } from './components';
-import settingIcon from '../../assets/setting.svg';
+import { useContext, lazy, Suspense } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ProgressBar, SessionDataContext, Stopwatch } from './components';
 
 import styles from "./practice.module.css";
 
@@ -46,7 +45,6 @@ const PracticePage: React.FC = () => {
                     <button className={`jpType__button`} onClick={resetSession}>Reset</button>
                 </div>
             </div>
-            
         </div>
     )
 }
